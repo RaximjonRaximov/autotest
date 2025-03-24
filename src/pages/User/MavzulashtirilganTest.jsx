@@ -86,6 +86,7 @@ const MavzulashtirilganTest = () => {
         backgroundPosition: "center",
       }}
     >
+      
       {/* Header */}
       <h1
         className="text-2xl font-bold text-white text-center mb-6"
@@ -111,6 +112,7 @@ const MavzulashtirilganTest = () => {
         ))}
       </div>
     </div>
+    
   );
 };
 

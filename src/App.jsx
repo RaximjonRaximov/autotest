@@ -88,9 +88,8 @@ const App = () => {
               <Route
                 path="mavzulashtirilganTestlar"
                 element={<MavzulashtirilganTest />}
-              >
-                <Route path="aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/>
-              </Route>
+              />
+                <Route path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/> {/* Zat */}
               <Route path="imtihon2050" element={<Imtihon2050 />} />
               <Route index element={<UserMain />} />
             </Route>
