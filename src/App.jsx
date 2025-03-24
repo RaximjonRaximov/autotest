@@ -89,7 +89,7 @@ const App = () => {
                 path="mavzulashtirilganTestlar"
                 element={<MavzulashtirilganTest />}
               >
-                <Route path="aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/>
+                <Route path="aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/> {/* Zat */}
               </Route>
               <Route path="imtihon2050" element={<Imtihon2050 />} />
               <Route index element={<UserMain />} />
