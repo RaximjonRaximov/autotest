@@ -101,7 +101,7 @@ function AynanMavzulashtirilganTestlar() {
           <img
             src={currentQuestion.question?.Image}
             alt="Question Image"
-            className="h-[150px]object-cover rounded-[12px]"
+            className="h-[150px] object-cover rounded-[12px]"
           />
         </div>
       </div>
