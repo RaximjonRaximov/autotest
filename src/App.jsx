@@ -24,6 +24,7 @@ import UserMain from "./pages/User/UserMain";
 import { LanguageProvider } from "./context/LanguageContext";
 import AynanMavzulashtirilganTestlar from "./pages/User/AynanMavzulashtirilganTestlar";
 import Imtihon2050 from "./pages/User/Imtihon2050";
+import Imtihon2050natija from "./pages/User/Imtihon2050natija";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -91,6 +92,7 @@ const App = () => {
               />
                 <Route path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/> {/* Zatdm */}
               <Route path="imtihon2050" element={<Imtihon2050 />} />
+              <Route path="imtihon2050natija" element={<Imtihon2050natija />} /> {/* Add new route */}
               <Route index element={<UserMain />} />
             </Route>
 
