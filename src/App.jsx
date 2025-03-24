@@ -57,10 +57,7 @@ const App = () => {
       <LanguageProvider>
         <Router>
           <Routes>
-            <Route
-              path="/login"
-              element={<Login />}
-            />
+            <Route path="/login" element={<Login />} />
 
             {/* Admin Routes */}
             <Route
@@ -71,37 +68,32 @@ const App = () => {
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="dashboard"
-                element={<AdminDashboard />}
-              />
-              <Route
-                path="settings"
-                element={<AdminSettings />}
-              />
-              <Route
-                path="reports"
-                element={<AdminReports />}
-              />
-              <Route
-                index
-                element={<AdminDashboard />}
-              />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route index element={<AdminDashboard />} />
             </Route>
 
-          {/* User Routes (for both user and Online roles) */}
-          <Route
-            path="/user"
-            element={
-              <ProtectedRoute allowedRoles={["user", "online"]}> {/* Allow both roles */}
-                <UserLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="mavzulashtirilganTestlar" element={<MavzulashtirilganTest />} />
-            <Route path="imtihon2050" element={<Imtihon2050 />} />
-            <Route index element={<UserMain />} />
-          </Route>
+            {/* User Routes (for both user and Online roles) */}
+            <Route
+              path="/user"
+              element={
+                <ProtectedRoute allowedRoles={["user", "online"]}>
+                  {" "}
+                  {/* Allow both roles */}
+                  <UserLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route
+                path="mavzulashtirilganTestlar"
+                element={<MavzulashtirilganTest />}
+              >
+                <Route path="aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/>
+              </Route>
+              <Route path="imtihon2050" element={<Imtihon2050 />} />
+              <Route index element={<UserMain />} />
+            </Route>
 
             {/* SuperAdmin Routes */}
             <Route
@@ -112,28 +104,13 @@ const App = () => {
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="users"
-                element={<SuperAdminUsers />}
-              />
-              <Route
-                path="logs"
-                element={<SuperAdminLogs />}
-              />
-              <Route
-                path="analytics"
-                element={<SuperAdminAnalytics />}
-              />
-              <Route
-                index
-                element={<SuperAdminUsers />}
-              />
+              <Route path="users" element={<SuperAdminUsers />} />
+              <Route path="logs" element={<SuperAdminLogs />} />
+              <Route path="analytics" element={<SuperAdminAnalytics />} />
+              <Route index element={<SuperAdminUsers />} />
             </Route>
 
-            <Route
-              path="/"
-              element={<Home />}
-            />
+            <Route path="/" element={<Home />} />
           </Routes>
         </Router>
       </LanguageProvider>
