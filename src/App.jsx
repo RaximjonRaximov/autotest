@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import MavzulashtirilganTest from "./pages/User/MavzulashtirilganTest";
 import UserMain from "./pages/User/UserMain";
 import { LanguageProvider } from "./context/LanguageContext";
+import Imtihon2050 from "./pages/User/Imtihon2050";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -76,6 +77,7 @@ const App = () => {
             }
           >
             <Route path="mavzulashtirilganTestlar" element={<MavzulashtirilganTest />} />
+            <Route path="imtihon2050" element={<Imtihon2050 />} />
             <Route index element={<UserMain />} />
           </Route>
 
