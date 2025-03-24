@@ -23,6 +23,7 @@ import MavzulashtirilganTest from "./pages/User/MavzulashtirilganTest";
 import UserMain from "./pages/User/UserMain";
 import { LanguageProvider } from "./context/LanguageContext";
 import AynanMavzulashtirilganTestlar from "./pages/User/AynanMavzulashtirilganTestlar";
+import Imtihon2050 from "./pages/User/Imtihon2050";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -88,33 +89,19 @@ const App = () => {
               />
             </Route>
 
-            {/* User Routes (for both user and Online roles) */}
-            <Route
-              path="/user"
-              element={
-                <ProtectedRoute allowedRoles={["user", "online"]}>
-                  {" "}
-                  {/* Allow both roles */}
-                  <UserLayout />
-                </ProtectedRoute>
-              }
-            >
-              {/* Main Route */}
-              <Route
-                path="mavzulashtirilganTestlar"
-                element={<MavzulashtirilganTest />}
-              />
-
-              {/* This is NOT nested under MavzulashtirilganTest */}
-              <Route
-                path="mavzulashtirilganTestlar/aynanmavzulashtirilganTestlar"
-                element={<AynanMavzulashtirilganTestlar />}
-              />
-              <Route
-                index
-                element={<UserMain />}
-              />
-            </Route>
+          {/* User Routes (for both user and Online roles) */}
+          <Route
+            path="/user"
+            element={
+              <ProtectedRoute allowedRoles={["user", "online"]}> {/* Allow both roles */}
+                <UserLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="mavzulashtirilganTestlar" element={<MavzulashtirilganTest />} />
+            <Route path="imtihon2050" element={<Imtihon2050 />} />
+            <Route index element={<UserMain />} />
+          </Route>
 
             {/* SuperAdmin Routes */}
             <Route
