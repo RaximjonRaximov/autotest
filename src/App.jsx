@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -17,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import MavzulashtirilganTest from "./pages/User/MavzulashtirilganTest";
 import UserMain from "./pages/User/UserMain";
 import { LanguageProvider } from "./context/LanguageContext";
+import AynanMavzulashtirilganTestlar from "./pages/User/AynanMavzulashtirilganTestlar";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -28,7 +34,8 @@ const Home = () => {
     if (role) {
       if (role === "admin") {
         navigate("/admin");
-      } else if (role === "user" || role === "Online") { // Combine user and Online
+      } else if (role === "user" || role === "Online") {
+        // Combine user and Online
         navigate("/user");
       } else if (role === "superadmin") {
         navigate("/superadmin");
@@ -46,58 +53,103 @@ const Home = () => {
 const App = () => {
   return (
     <AuthProvider>
-    <LanguageProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+      <LanguageProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/login"
+              element={<Login />}
+            />
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="settings" element={<AdminSettings />} />
-            <Route path="reports" element={<AdminReports />} />
-            <Route index element={<AdminDashboard />} />
-          </Route>
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route
+                path="dashboard"
+                element={<AdminDashboard />}
+              />
+              <Route
+                path="settings"
+                element={<AdminSettings />}
+              />
+              <Route
+                path="reports"
+                element={<AdminReports />}
+              />
+              <Route
+                index
+                element={<AdminDashboard />}
+              />
+            </Route>
 
-          {/* User Routes (for both user and Online roles) */}
-          <Route
-            path="/user"
-            element={
-              <ProtectedRoute allowedRoles={["user", "online"]}> {/* Allow both roles */}
-                <UserLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="mavzulashtirilganTestlar" element={<MavzulashtirilganTest />} />
-            <Route index element={<UserMain />} />
-          </Route>
+            {/* User Routes (for both user and Online roles) */}
+            <Route
+              path="/user"
+              element={
+                <ProtectedRoute allowedRoles={["user", "online"]}>
+                  {" "}
+                  {/* Allow both roles */}
+                  <UserLayout />
+                </ProtectedRoute>
+              }
+            >
+              {/* Main Route */}
+              <Route
+                path="mavzulashtirilganTestlar"
+                element={<MavzulashtirilganTest />}
+              />
 
-          {/* SuperAdmin Routes */}
-          <Route
-            path="/superadmin"
-            element={
-              <ProtectedRoute allowedRoles={["superadmin"]}>
-                <SuperAdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="users" element={<SuperAdminUsers />} />
-            <Route path="logs" element={<SuperAdminLogs />} />
-            <Route path="analytics" element={<SuperAdminAnalytics />} />
-            <Route index element={<SuperAdminUsers />} />
-          </Route>
+              {/* This is NOT nested under MavzulashtirilganTest */}
+              <Route
+                path="mavzulashtirilganTestlar/aynanmavzulashtirilganTestlar"
+                element={<AynanMavzulashtirilganTestlar />}
+              />
+              <Route
+                index
+                element={<UserMain />}
+              />
+            </Route>
 
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </Router>
-    </LanguageProvider>
+            {/* SuperAdmin Routes */}
+            <Route
+              path="/superadmin"
+              element={
+                <ProtectedRoute allowedRoles={["superadmin"]}>
+                  <SuperAdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route
+                path="users"
+                element={<SuperAdminUsers />}
+              />
+              <Route
+                path="logs"
+                element={<SuperAdminLogs />}
+              />
+              <Route
+                path="analytics"
+                element={<SuperAdminAnalytics />}
+              />
+              <Route
+                index
+                element={<SuperAdminUsers />}
+              />
+            </Route>
+
+            <Route
+              path="/"
+              element={<Home />}
+            />
+          </Routes>
+        </Router>
+      </LanguageProvider>
     </AuthProvider>
   );
 };

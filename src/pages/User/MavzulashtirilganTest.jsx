@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
-import MavzuTest from '../../components/MavzuTest';
-import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
+import { useState, useEffect } from "react";
+import api from "../../services/api";
+import MavzuTest from "../../components/MavzuTest";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../context/LanguageContext";
 
 const MavzulashtirilganTest = () => {
   const [categories, setCategories] = useState([]);
@@ -14,18 +14,18 @@ const MavzulashtirilganTest = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get('/categories/');
+        const response = await api.get("/categories/");
         setCategories(response.data);
         setLoading(false);
       } catch (err) {
         if (err.response && err.response.status === 401) {
           // Token is invalid or expired, redirect to login
-          navigate('/login');
+          navigate("/login");
         } else {
-          setError('Kategoriyalarni yuklashda xato yuz berdi');
+          setError("Kategoriyalarni yuklashda xato yuz berdi");
           setLoading(false);
         }
-        console.error('API xatosi:', err);
+        console.error("API xatosi:", err);
       }
     };
 
@@ -34,12 +34,12 @@ const MavzulashtirilganTest = () => {
 
   const getTitleByLanguage = (category) => {
     switch (selectedLanguage) {
-      case 'RU':
+      case "RU":
         return category.typeLanRu;
-      case 'KK':
+      case "KK":
         return category.typeLanKarakalpak;
-      case 'УЗ': 
-      return category.typeLanKrill;
+      case "УЗ":
+        return category.typeLanKrill;
       default:
         return category.type; // Fallback to default type
     }
@@ -48,16 +48,16 @@ const MavzulashtirilganTest = () => {
   // Translate the header based on the selected language
   const getHeaderText = () => {
     switch (selectedLanguage) {
-      case 'RU':
-        return 'ТЕСТЫ ПО ТЕМАМ';
-      case 'UZ':
-        return 'MAVZULASHTIRILGAN TESTLAR';
-      case 'KK':
-        return 'ТАҚЫРЫПТЫҚ ТЕСТТЕР';
-      case 'УЗ':
+      case "RU":
+        return "ТЕСТЫ ПО ТЕМАМ";
+      case "UZ":
+        return "MAVZULASHTIRILGAN TESTLAR";
+      case "KK":
+        return "ТАҚЫРЫПТЫҚ ТЕСТТЕР";
+      case "УЗ":
         return "МАВЗУЛАШТИРИЛГАН ТЕСТЛАР";
       default:
-        return 'MAVZULASHTIRILGAN TESTLAR';
+        return "MAVZULASHTIRILGAN TESTLAR";
     }
   };
 
@@ -82,15 +82,15 @@ const MavzulashtirilganTest = () => {
       className="min-h-screen p-6"
       style={{
         backgroundImage: `url('/loginBg.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       {/* Header */}
       <h1
         className="text-2xl font-bold text-white text-center mb-6"
         style={{
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
         }}
       >
         {getHeaderText()}
@@ -100,6 +100,11 @@ const MavzulashtirilganTest = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((category) => (
           <MavzuTest
+            onClick={() =>
+              navigate(
+                `/user/mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar`
+              )
+            }
             key={category.id}
             title={getTitleByLanguage(category)}
           />
