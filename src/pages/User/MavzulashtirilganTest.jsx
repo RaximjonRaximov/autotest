@@ -41,7 +41,7 @@ const MavzulashtirilganTest = () => {
       case 'УЗ': 
       return category.typeLanKrill;
       default:
-        return category.type; // Fallback to default type
+        return category.type; // Fallback to default type alllllllllllllllllllloooooo
     }
   };
 
