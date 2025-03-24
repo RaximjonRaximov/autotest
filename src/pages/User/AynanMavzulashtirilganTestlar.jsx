@@ -1,8 +1,25 @@
-import Javob from "../../components/Javob";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import Savol from "../../components/Savol";
+import api from "../../services/api";
 
-function AynanMavzulashtirilganTestlar(id) {
-  console.log(id);
+function AynanMavzulashtirilganTestlar() {
+  const id = useSelector((state) => state.cart.categoryId);
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  useEffect(() => {
+    const getQuestions = async () => {
+      try {
+        const response = await api.get(`/questions_by_category/${id}/`);
+        setQuestions(response.data);
+        setCurrentQuestion(response.data[0].id);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+    getQuestions();
+  }, [id]);
   return (
     <div
       className="min-h-screen p-6"
@@ -22,17 +39,9 @@ function AynanMavzulashtirilganTestlar(id) {
           Test
         </button>
       </div>
-      <Savol />
-      <div className="flex">
-        <div className="javoblar flex-1 space-y-5">
-          <Javob />
-        </div>
-        <div className="rasm flex-1 ">
-          <img
-            src="/public/logo.png"
-            alt=""
-          />
-        </div>
+      <div className="sadg">
+        <Savol id={currentQuestion} />
+        
       </div>
     </div>
   );

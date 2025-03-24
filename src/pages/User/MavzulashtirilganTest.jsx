@@ -3,6 +3,8 @@ import api from "../../services/api";
 import MavzuTest from "../../components/MavzuTest";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
+import { useDispatch } from "react-redux";
+import { cartActions } from "../../store";
 
 const MavzulashtirilganTest = () => {
   const [categories, setCategories] = useState([]);
@@ -10,6 +12,12 @@ const MavzulashtirilganTest = () => {
   const [error, setError] = useState(null);
   const { selectedLanguage } = useLanguage(); // Get the selected language from context
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleClick = (id) => {
+    dispatch(cartActions.setCategoryId(id));
+    navigate(`/user/mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar`);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -86,7 +94,6 @@ const MavzulashtirilganTest = () => {
         backgroundPosition: "center",
       }}
     >
-      
       {/* Header */}
       <h1
         className="text-2xl font-bold text-white text-center mb-6"
@@ -101,18 +108,13 @@ const MavzulashtirilganTest = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((category) => (
           <MavzuTest
-            onClick={() =>
-              navigate(
-                `/user/mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar`
-              )
-            }
+            onClick={() => handleClick(category.id)}
             key={category.id}
             title={getTitleByLanguage(category)}
           />
         ))}
       </div>
     </div>
-    
   );
 };
 
