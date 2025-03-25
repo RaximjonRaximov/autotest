@@ -29,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md px-[5rem] flex justify-between items-center sticky top-0 z-50">
+    <nav className="bg-white shadow-md px-[5rem] flex justify-between items-center sticky top-0 z-20">
       <div className="flex items-center">
         <img src="/logo.png" alt="Primer Avtotest" className="h-20" />
         <h1

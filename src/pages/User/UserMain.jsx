@@ -11,7 +11,8 @@ const UserMain = () => {
   const dispatch = useDispatch();
   const reduxState = useSelector((state) => state.cart); // Access Redux state for logging
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [imtihonLoading, setImtihonLoading] = useState(false); // Loading state for Imtihon 20/50
+  const [blockTestLoading, setBlockTestLoading] = useState(false); // Loading state for Blok Test
   const [error, setError] = useState(null);
   const buttonRef = useRef(null);
   const modalRef = useRef(null);
@@ -19,7 +20,7 @@ const UserMain = () => {
   const getHeaderText = () => {
     switch (selectedLanguage) {
       default:
-        return 'Primer Avtotest';
+        return 'Premier Avtotest';
     }
   };
 
@@ -29,25 +30,25 @@ const UserMain = () => {
         RU: 'Тематические тесты',
         UZ: 'Mavzulashitirilgan testlar',
         KK: 'Тақырыптық тестер',
-        KPJ: 'Тақырыптық тестер', // Fixed "УЗ" to "KPJ"
+        УЗ: 'Тақырыптық тестер',
       },
       imtihonBiletlar: {
         RU: 'Экзаменационные билеты',
         UZ: 'Imtihon Biletlar',
         KK: 'Емтихан билеттері',
-        KPJ: 'Емтихан билеттері', // Fixed "УЗ" to "KPJ"
+        УЗ: 'Емтихан билеттері',
       },
       imtihon2050: {
         RU: 'Экзамен (20, 50)',
         UZ: 'Imtihon(20,50)',
         KK: 'Емтихан (20, 50)',
-        KPJ: 'Емтихан (20, 50)', // Fixed "УЗ" to "KPJ"
+        УЗ: 'Емтихан (20, 50)',
       },
       blokTest: {
         RU: 'Блочный тест',
         UZ: 'Blok test',
         KK: 'Блоктық тест',
-        KPJ: 'Блоктық тест', // Fixed "УЗ" to "KPJ"
+        УЗ: 'Блоктық тест',
       },
     };
 
@@ -62,8 +63,8 @@ const UserMain = () => {
     setIsModalOpen(false);
   };
 
-  const fetchQuestions = async (count) => {
-    setLoading(true);
+  const fetchQuestions = async (count, redirectPath, setLoading) => {
+    setLoading(true); // Set the specific loading state
     setError(null);
     try {
       console.log(`[API Request] Fetching questions for count: ${count}`);
@@ -84,7 +85,7 @@ const UserMain = () => {
       dispatch(cartActions.addTest(testIds));
       console.log('[Redux] After dispatch - New state:', { test: testIds });
 
-      navigate('/user/imtihon2050');
+      navigate(redirectPath);
     } catch (err) {
       console.error('[API Error]:', err);
       if (err.response) {
@@ -97,13 +98,17 @@ const UserMain = () => {
       }
       setError('Savollarni yuklashda xato yuz berdi');
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset the specific loading state
       closeModal();
     }
   };
 
   const handleImtihonSelect = (type) => {
-    fetchQuestions(type);
+    fetchQuestions(type, '/user/imtihon2050', setImtihonLoading);
+  };
+
+  const handleBlockTestSelect = () => {
+    fetchQuestions('20', '/user/blocktest', setBlockTestLoading); // Use blockTestLoading
   };
 
   useEffect(() => {
@@ -165,9 +170,9 @@ const UserMain = () => {
               ref={buttonRef}
               onClick={openModal}
               className="bg-gray-800 text-white text-center py-10 text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
-              disabled={loading}
+              disabled={imtihonLoading} // Use imtihonLoading
             >
-              {loading ? 'Yuklanmoqda...' : getButtonText('imtihon2050')}
+              {imtihonLoading ? 'Yuklanmoqda...' : getButtonText('imtihon2050')}
             </button>
             {isModalOpen && (
               <div
@@ -187,14 +192,14 @@ const UserMain = () => {
                   <button
                     onClick={() => handleImtihonSelect('20')}
                     className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-[1.5rem]"
-                    disabled={loading}
+                    disabled={imtihonLoading} // Use imtihonLoading
                   >
                     20
                   </button>
                   <button
                     onClick={() => handleImtihonSelect('50')}
                     className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
-                    disabled={loading}
+                    disabled={imtihonLoading} // Use imtihonLoading
                   >
                     50
                   </button>
@@ -202,12 +207,13 @@ const UserMain = () => {
               </div>
             )}
           </div>
-          <Link
-            to="/user/blok-test"
-            className="bg-gray-800 text-white text-center py-10 text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+          <button
+            onClick={handleBlockTestSelect}
+            className="bg-gray-800 text-white text-center py-10 text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
+            disabled={blockTestLoading} // Use blockTestLoading
           >
-            {getButtonText('blokTest')}
-          </Link>
+            {blockTestLoading ? 'Yuklanmoqda...' : getButtonText('blokTest')}
+          </button>
         </div>
       </div>
     </div>
