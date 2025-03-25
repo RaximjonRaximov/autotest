@@ -15,13 +15,12 @@ function AynanMavzulashtirilganTestlar() {
   const [testStarted, setTestStarted] = useState(false);
   const [testEnded, setTestEnded] = useState(false);
   const [error, setError] = useState(null);
-  const [answers, setAnswers] = useState({}); // { questionId: { answer, is_correct } }
+  const [answers, setAnswers] = useState({});
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const { selectedLanguage } = useLanguage();
   const navigate = useNavigate();
 
-  // Fetch question IDs
   useEffect(() => {
     const getQuestions = async () => {
       if (!id) {
@@ -42,7 +41,6 @@ function AynanMavzulashtirilganTestlar() {
     getQuestions();
   }, [id]);
 
-  // Fetch current question
   useEffect(() => {
     const getCurrentQuestion = async () => {
       if (!questions.length || currentPage < 1 || currentPage > questions.length) return;
@@ -62,14 +60,13 @@ function AynanMavzulashtirilganTestlar() {
     getCurrentQuestion();
   }, [questions, currentPage]);
 
-  // Timer logic
   useEffect(() => {
     if (!testStarted || testEnded) return;
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 0) {
           clearInterval(timer);
-          handleTestEnd(); // End test when time runs out
+          handleTestEnd();
           return 0;
         }
         return prevTime - 1;
@@ -78,7 +75,6 @@ function AynanMavzulashtirilganTestlar() {
     return () => clearInterval(timer);
   }, [testStarted, testEnded]);
 
-  // End test when all questions are answered
   useEffect(() => {
     if (testStarted && Object.keys(answers).length === questions.length) {
       handleTestEnd();
@@ -94,28 +90,23 @@ function AynanMavzulashtirilganTestlar() {
     }
   };
 
-  // Handle answer selection (only once per question)
   const handleAnswerClick = (answer) => {
-    if (!testStarted) return;
+    if (!testStarted) return; // Only allow answering when test is started
     const questionId = questions[currentPage - 1]?.id;
 
-    // Prevent answering if already answered
     if (answers[questionId]) return;
 
-    // Save the answer and its correctness
     setAnswers((prev) => ({
       ...prev,
       [questionId]: { answer, is_correct: answer.is_correct },
     }));
 
-    // Update counts
     if (answer.is_correct) {
       setCorrectCount((prev) => prev + 1);
     } else {
       setIncorrectCount((prev) => prev + 1);
     }
 
-    // Auto-advance after a delay
     setTimeout(() => {
       if (currentPage < questions.length) {
         setCurrentPage(currentPage + 1);
@@ -153,12 +144,10 @@ function AynanMavzulashtirilganTestlar() {
     setAnswers({});
     setCorrectCount(0);
     setIncorrectCount(0);
-    setTestEnded(false); // Reset test ended state
+    setTestEnded(false);
   };
 
-  // Handle test end (time out, all answered, or manual stop)
   const handleTestEnd = () => {
-    // Mark unanswered questions as incorrect
     const unansweredCount = questions.length - Object.keys(answers).length;
     if (unansweredCount > 0) {
       setIncorrectCount((prev) => prev + unansweredCount);
@@ -167,9 +156,8 @@ function AynanMavzulashtirilganTestlar() {
     setTestStarted(false);
   };
 
-  // Handle manual stop test
   const handleStopTest = () => {
-    handleTestEnd(); // End the test and calculate results
+    handleTestEnd();
   };
 
   const calculateResults = () => {
@@ -249,7 +237,7 @@ function AynanMavzulashtirilganTestlar() {
                 className={`px-12 py-1 text-white font-regular rounded-lg text-[22px] bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
                      shadow-[0px_0px_30px_0px_#FF7F5080] transition-all duration-300 hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105`}
               >
-                {testStarted ? "Stop Test" : "Test"}
+                {testStarted ? "Tugatish" : "Test"}
               </button>
             </div>
           </div>
@@ -277,6 +265,7 @@ function AynanMavzulashtirilganTestlar() {
                         isCorrect={answer.is_correct}
                         isAnswered={isAnswered}
                         disabled={isAnswered}
+                        showCorrect={!testStarted} // Show correct answers before test starts
                       />
                     );
                   })}
