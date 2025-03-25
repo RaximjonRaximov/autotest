@@ -221,7 +221,15 @@ const BlockTest = () => {
           onClick={handleFinish}
           className="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
         >
-          Tugatish
+          {selectedLanguage === "UZ"
+            ? "Tugatish"
+            : selectedLanguage === "KK"
+            ? "Ayaqtaý"
+            : selectedLanguage === "УЗ"
+            ? "Тугатиш"
+            : selectedLanguage === "RU"
+            ? "Закончить"
+            : ""}
         </button>
       </div>
 

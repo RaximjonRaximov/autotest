@@ -193,17 +193,54 @@ function AynanMavzulashtirilganTestlar() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-white">
         <div className="text-3xl font-bold mb-4">
-          Test javoblari: {correctCount}/{questions.length}
+          {selectedLanguage === "UZ"
+            ? "Test javoblari"
+            : selectedLanguage === "KK"
+            ? "Test jawapları"
+            : selectedLanguage === "УЗ"
+            ? "Тест жавоблари"
+            : selectedLanguage === "RU"
+            ? "Ответы теста"
+            : ""}{" "}
+          {correctCount}/{questions.length}
         </div>
         <div className="text-2xl mb-4">
-          Sizning ozlashtirishingiz: {percentage}%
+          {selectedLanguage === "UZ"
+            ? "Sizning o'zlashtirishingiz"
+            : selectedLanguage === "KK"
+            ? "Sizdiń úylestiriwińiz"
+            : selectedLanguage === "УЗ"
+            ? "Сизнинг ўзлаштиришингиз"
+            : selectedLanguage === "RU"
+            ? "Ваше усвоение"
+            : ""}{" "}
+          {percentage}%
         </div>
-        <div className="text-2xl mb-8">Test natijasi: {outcome}</div>
+        <div className="text-2xl mb-8">
+          {selectedLanguage === "UZ"
+            ? "Test natijasi"
+            : selectedLanguage === "KK"
+            ? "Test nátijesi"
+            : selectedLanguage === "УЗ"
+            ? "Тест натижаси"
+            : selectedLanguage === "RU"
+            ? "Результат теста"
+            : ""}{" "}
+          {outcome}
+        </div>
         <button
           onClick={handleExit}
           className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
         >
-          Chiqish
+          {selectedLanguage === "UZ"
+            ? "Chiqish"
+            : selectedLanguage === "KK"
+            ? "Shyǵý"
+            : selectedLanguage === "УЗ"
+            ? "Чиқиш"
+            : selectedLanguage === "RU"
+            ? "Выход"
+            : ""}
         </button>
       </div>
     );
