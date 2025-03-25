@@ -11,6 +11,10 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const handleRedirect = () => {
+    window.location.href = "https://django-avtotest.onrender.com/admin/";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -62,7 +66,11 @@ const Login = () => {
       <div className="text-center">
         {/* Logo and Text */}
         <div className="flex justify-center items-center space-x-4 mb-12">
-          <img src="logo.png" alt="Primer Avtotest Logo" className="h-20" />
+          <img
+            src="logo.png"
+            alt="Primer Avtotest Logo"
+            className="h-20"
+          />
           <h1
             className="text-4xl font-extrabold bg-clip-text text-transparent"
             style={{
@@ -74,7 +82,10 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6"
+        >
           <div>
             <label
               htmlFor="username"
@@ -109,20 +120,16 @@ const Login = () => {
               required
             />
           </div>
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           <div className="flex justify-center space-x-16">
             <button
               type="button"
               onClick={() => {
-                setUsername("");
-                setPassword("");
-                setError(null);
+                handleRedirect()
               }}
               className="w-32 py-2 bg-yellow-500 text-white font-semibold rounded-[0.5rem] hover:bg-yellow-600 transition-colors"
             >
-              Chiqish
+              Admin
             </button>
             <button
               type="submit"
@@ -136,7 +143,9 @@ const Login = () => {
         {/* Footer Text */}
         <div className="mt-8 text-white text-sm">
           <p>
-            TIZIMDAN FOYDALANISH UCHUN <span className=" font-bold">"PRIMER AVTOTEST"</span>  O'QUV <br /> MARKAZIDA O'TGAN BO'LISHINGIZ KERAK!
+            TIZIMDAN FOYDALANISH UCHUN{" "}
+            <span className=" font-bold">"PRIMER AVTOTEST"</span> O'QUV <br />{" "}
+            MARKAZIDA O'TGAN BO'LISHINGIZ KERAK!
           </p>
           <p className="mt-2">+998(93) 333 33 33</p>
         </div>
