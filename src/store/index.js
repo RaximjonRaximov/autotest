@@ -34,6 +34,9 @@ const cartSlice = createSlice({
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
     },
+    setCurrentBiletId:(state,action) =>{
+      state.CurrentBiletId = action.payload;
+    }
   },
 });
 
