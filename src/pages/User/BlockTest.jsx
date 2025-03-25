@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import Savol from '../../components/Savol';
-import Javob from '../../components/Javob';
+import JavobBlockTest from '../../components/JavobBlockTest';
 import { useLanguage } from '../../context/LanguageContext';
 
-const Imtihon2050 = () => {
+const BlockTest = () => {
   const questionIds = useSelector((state) => state.cart.test);
   const navigate = useNavigate();
   const { selectedLanguage } = useLanguage();
@@ -14,7 +14,7 @@ const Imtihon2050 = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [answeredQuestions, setAnsweredQuestions] = useState({});
-  const [answerCorrectness, setAnswerCorrectness] = useState({});
+  const [answerCorrectness, setAnswerCorrectness] = useState({}); // Tracks if the user's selected answer is correct
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const initialTime = 25 * 60; // 25 minutes in seconds
@@ -23,7 +23,7 @@ const Imtihon2050 = () => {
   // Function to clear the database
   const clearDatabase = async () => {
     try {
-      await api.get('/user-results/'); // Assumed endpoint to clear the database
+      await api.post('/user-results/reset/'); // Assumed endpoint to clear the database
       console.log('Database cleared successfully on refresh');
     } catch (err) {
       console.error('Error clearing database on refresh:', err);
@@ -44,13 +44,9 @@ const Imtihon2050 = () => {
 
   // Run on component mount (happens on every refresh)
   useEffect(() => {
-    // Reset all states
     resetTest();
-
-    // Clear the database
     clearDatabase();
 
-    // Fetch questions after resetting
     const fetchQuestions = async () => {
       setLoading(true);
       setError(null);
@@ -75,7 +71,7 @@ const Imtihon2050 = () => {
     if (questionIds.length > 0) {
       fetchQuestions();
     }
-  }, [questionIds, navigate]); // Dependencies ensure this runs on mount and when questionIds or navigate change
+  }, [questionIds, navigate]);
 
   // Timer logic
   useEffect(() => {
@@ -90,37 +86,41 @@ const Imtihon2050 = () => {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []); // Empty dependency array ensures the timer starts fresh on mount
+  }, []);
 
-  // Handle answer selection and submit to backend
-  const handleAnswerSelect = async (questionId, answerId) => {
+  // Handle answer click (first click: highlight, second click: submit)
+  const handleAnswerClick = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
-    try {
-      const response = await api.post('/submit-answer/', {
-        question_id: questionId.toString(),
-        answer_id: answerId.toString(),
-      });
-      console.log('Submit Answer Response:', response.data);
+    if (selectedAnswers[questionId] === answerId) {
+      // Second click on the same answer: submit to API
+      try {
+        const response = await api.post('/submit-answer/', {
+          question_id: questionId.toString(),
+          answer_id: answerId.toString(),
+        });
+        console.log('Submit Answer Response:', response.data);
 
-      const isCorrect = response.data.is_correct;
+        const isCorrect = response.data.is_correct;
 
+        setAnsweredQuestions((prev) => ({
+          ...prev,
+          [questionId]: true,
+        }));
+
+        setAnswerCorrectness((prev) => ({
+          ...prev,
+          [questionId]: isCorrect,
+        }));
+      } catch (err) {
+        console.error('Error submitting answer:', err);
+      }
+    } else {
+      // First click: highlight the answer in yellow
       setSelectedAnswers((prev) => ({
         ...prev,
         [questionId]: answerId,
       }));
-
-      setAnsweredQuestions((prev) => ({
-        ...prev,
-        [questionId]: true,
-      }));
-
-      setAnswerCorrectness((prev) => ({
-        ...prev,
-        [questionId]: isCorrect,
-      }));
-    } catch (err) {
-      console.error('Error submitting answer:', err);
     }
   };
 
@@ -149,7 +149,6 @@ const Imtihon2050 = () => {
         },
       });
 
-      // Clear the database after fetching results
       await clearDatabase();
     } catch (err) {
       console.error('Error fetching user results:', err);
@@ -168,8 +167,8 @@ const Imtihon2050 = () => {
   if (questionIds.length === 0 || questions.length === 0) {
     return (
       <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold mb-4">Imtihon 20/50</h1>
-        <p>No questions available. Please select 20 or 50 questions.</p>
+        <h1 className="text-2xl font-bold mb-4">Blok Test</h1>
+        <p>No questions available. Please select questions.</p>
       </div>
     );
   }
@@ -187,7 +186,7 @@ const Imtihon2050 = () => {
 
   const answers = currentQuestion?.answers || [];
   const imageUrl = currentQuestion?.question?.Image
-    ? `${currentQuestion.question.Image}`
+    ? `https://django-avtotest.onrender.com${currentQuestion.question.Image}`
     : '/avtotest.jpg';
 
   return (
@@ -228,7 +227,7 @@ const Imtihon2050 = () => {
 
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      <div className="flex  justify-between flex-col md:flex-row gap-6">
+      <div className="flex justify-between flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div className="space-y-4">
             {answers.map((answer, idx) => {
@@ -241,16 +240,21 @@ const Imtihon2050 = () => {
                 ? answer.LanKarakalpak
                 : answer.LanRu;
 
+              const isSelected = selectedAnswers[currentQuestion.question.id] === answer.id;
               const isAnswered = !!answeredQuestions[currentQuestion.question.id];
+              const isAnswerCorrect = answer.is_correct; // Whether this specific answer is correct
+              const isUserAnswerCorrect = answerCorrectness[currentQuestion.question.id]; // Whether the user's selected answer is correct
+
               return (
-                <Javob
+                <JavobBlockTest
                   key={answer.id}
                   label={label}
                   text={answerText}
-                  onClick={() => handleAnswerSelect(currentQuestion.question.id, answer.id)}
-                  isSelected={selectedAnswers[currentQuestion.question.id] === answer.id}
-                  isCorrect={answer.is_correct}
+                  onClick={() => handleAnswerClick(currentQuestion.question.id, answer.id)}
+                  isSelected={isSelected}
                   isAnswered={isAnswered}
+                  isAnswerCorrect={isAnswerCorrect}
+                  isUserAnswerCorrect={isUserAnswerCorrect}
                 />
               );
             })}
@@ -269,4 +273,4 @@ const Imtihon2050 = () => {
   );
 };
 
-export default Imtihon2050;
+export default BlockTest;
