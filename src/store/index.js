@@ -1,50 +1,53 @@
+// store/index.js
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from sessionStorage
 const loadStateFromSessionStorage = () => {
   try {
-    const serializedState = sessionStorage.getItem('cartState');
-    if (serializedState === null) {
-      return { test: [] }; // Default state if nothing is in sessionStorage
-    }
-    return JSON.parse(serializedState);
+    const serializedState = sessionStorage.getItem("cartState");
+    return serializedState ? JSON.parse(serializedState) : { test: [], categoryId: null };
   } catch (err) {
-    console.error("Error loading state from sessionStorage:", err);
-    return { test: [] }; // Fallback to default state
+    console.error("Error loading state:", err);
+    return { test: [], categoryId: null };
   }
 };
 
 // Save state to sessionStorage
 const saveStateToSessionStorage = (state) => {
   try {
-    const serializedState = JSON.stringify(state);
-    sessionStorage.setItem('cartState', serializedState);
+    sessionStorage.setItem("cartState", JSON.stringify(state));
   } catch (err) {
-    console.error("Error saving state to sessionStorage:", err);
+    console.error("Error saving state:", err);
   }
 };
 
-const initialLoginState = loadStateFromSessionStorage();
+// Initial state
+const initialState = loadStateFromSessionStorage();
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: initialLoginState,
+  initialState,
   reducers: {
-    addTest(state, action) {
+    addTest: (state, action) => {
       state.test = action.payload;
+    },
+    setCategoryId: (state, action) => {
+      state.categoryId = action.payload;
     },
   },
 });
 
+// Export actions individually
 export const cartActions = cartSlice.actions;
 
+// Configure store
 const store = configureStore({
   reducer: {
     cart: cartSlice.reducer,
   },
 });
 
-// Subscribe to store updates to save state to sessionStorage
+// Subscribe to store updates
 store.subscribe(() => {
   saveStateToSessionStorage(store.getState().cart);
 });

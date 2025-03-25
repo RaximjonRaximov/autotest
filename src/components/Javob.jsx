@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 
 const Javob = ({ label, text, onClick, isSelected, isCorrect, isAnswered }) => {
   // Styling for the label (A, B, C)
