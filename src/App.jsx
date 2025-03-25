@@ -81,8 +81,6 @@ const App = () => {
               path="/user"
               element={
                 <ProtectedRoute allowedRoles={["user", "online"]}>
-                  {" "}
-                  {/* Allow both roles */}
                   <UserLayout />
                 </ProtectedRoute>
               }
@@ -91,10 +89,16 @@ const App = () => {
                 path="mavzulashtirilganTestlar"
                 element={<MavzulashtirilganTest />}
               />
-                <Route path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/> {/* Z3atdm5 */}
+              <Route
+                path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar"
+                element={<AynanMavzulashtirilganTestlar />}
+              />
               <Route path="imtihon2050" element={<Imtihon2050 />} />
-              <Route path="imtihon2050natija" element={<Imtihon2050natija />} /> {/* Add new route */}
-              <Route path="blocktest" element={<BlockTest />} /> {/* Add new route */}
+              <Route
+                path="imtihon2050natija"
+                element={<Imtihon2050natija />}
+              />
+              <Route path="blocktest" element={<BlockTest />} />
               <Route index element={<UserMain />} />
             </Route>
 
