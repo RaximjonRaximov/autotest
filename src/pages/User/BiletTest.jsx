@@ -20,7 +20,7 @@ const BiletTest = () => {
   const [error, setError] = useState(null);
   const initialTime = 25 * 60; // 25 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(initialTime);
-  const {user} = useAuth();
+  const { user } = useAuth();
   const userId = user ? user.user_id : null;
 
   // Function to clear the database
@@ -145,29 +145,29 @@ const BiletTest = () => {
   const handleFinish = async () => {
     try {
       const timeTaken = initialTime - timeLeft;
-  
+
       // First get the user results
       const getResponse = await api.get("/user-results/");
       console.log("User Results Response:", getResponse.data);
       const { correct, incorrect } = getResponse.data;
-  
+
       // Prepare data for POST request
       const postData = {
         user_id: userId,
         table_id: id,
         correct: correct,
-        incorrect: 20 - correct  
+        incorrect: 20 - correct,
       };
-  
+
       // Save the results
       const postResponse = await api.post("/save-correct/", postData);
       console.log("Save Results Response:", postResponse.data);
-  
+
       console.log("userId", userId);
       console.log("correct", correct);
       console.log("incorrect", 20 - correct);
       console.log("tableId", id);
-  
+
       navigate("/user/imtihon2050natija", {
         state: {
           correct,
@@ -249,7 +249,15 @@ const BiletTest = () => {
           onClick={handleFinish}
           className="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
         >
-          Tugatish
+          {selectedLanguage === "UZ"
+            ? "Tugatish"
+            : selectedLanguage === "KK"
+            ? "Ayaqtaý"
+            : selectedLanguage === "УЗ"
+            ? "Тугатиш"
+            : selectedLanguage === "RU"
+            ? "Закончить"
+            : ""}
         </button>
       </div>
 
