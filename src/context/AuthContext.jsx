@@ -12,20 +12,24 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
+        console.log('Decoded Token:', decoded); // Debug: Log the decoded token
         // Check if the token is expired
         const currentTime = Date.now() / 1000; // Current time in seconds
         if (decoded.exp < currentTime) {
           // Token is expired, clear localStorage and set user to null
+          console.log('Token expired, clearing localStorage');
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           setUser(null);
         } else {
           // Token is valid, restore user state
-          setUser({
-            role: decoded.role,
+          const newUser = {
+            role: decoded.role.toLowerCase(), // Normalize role to lowercase
             user_id: decoded.user_id,
             phone_number: decoded.phone_number, // If phone_number is in the token
-          });
+          };
+          console.log('Setting user:', newUser); // Debug: Log the user being set
+          setUser(newUser);
         }
       } catch (error) {
         console.error("Token dekod qilishda xato:", error);
@@ -33,6 +37,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("refreshToken");
         setUser(null);
       }
+    } else {
+      console.log('No access token found in localStorage');
     }
   }, []); // Empty dependency array to run only on mount
 
@@ -41,11 +47,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("refreshToken", refresh);
 
     const decoded = jwtDecode(access);
-    setUser({
-      role: decoded.role,
+    const newUser = {
+      role: decoded.role.toLowerCase(), // Normalize role to lowercase
       user_id,
       phone_number,
-    });
+    };
+    setUser(newUser);
   };
 
   const logout = () => {
@@ -68,12 +75,14 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
           return null;
         }
-        return decoded.role;
+        const role = decoded.role.toLowerCase();
+        return role;
       } catch (error) {
         console.error("Token dekod qilishda xato:", error);
         return null;
       }
     }
+    console.log('No token found in getRole');
     return null;
   };
 

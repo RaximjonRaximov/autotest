@@ -26,6 +26,7 @@ import AynanMavzulashtirilganTestlar from "./pages/User/AynanMavzulashtirilganTe
 import Imtihon2050 from "./pages/User/Imtihon2050";
 import Imtihon2050natija from "./pages/User/Imtihon2050natija";
 import BlockTest from "./pages/User/BlockTest";
+import ImtihonBiletlar from "./pages/User/ImtihonBiletlar";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -37,8 +38,7 @@ const Home = () => {
     if (role) {
       if (role === "admin") {
         navigate("/admin");
-      } else if (role === "user" || role === "Online") {
-        // Combine user and Online
+      } else if (role === "user" || role.toLowerCase() === "online") { // Handle case sensitivity
         navigate("/user");
       } else if (role === "superadmin") {
         navigate("/superadmin");
@@ -46,11 +46,13 @@ const Home = () => {
     }
   }, [role, navigate]);
 
+  // If role is null, redirect to login immediately
   if (!role) {
     return <Navigate to="/login" />;
   }
 
-  return <div className="p-6">Home Page</div>;
+  // Return null to avoid rendering anything while redirecting
+  return null;
 };
 
 const App = () => {
@@ -76,13 +78,11 @@ const App = () => {
               <Route index element={<AdminDashboard />} />
             </Route>
 
-            {/* User Routes (for both user and Online roles) */}
+            {/* User Routes (for both user and online roles) */}
             <Route
               path="/user"
               element={
-                <ProtectedRoute allowedRoles={["user", "online"]}>
-                  {" "}
-                  {/* Allow both roles */}
+                <ProtectedRoute allowedRoles={["user", "online"]}> {/* Allow both roles */}
                   <UserLayout />
                 </ProtectedRoute>
               }
@@ -91,10 +91,17 @@ const App = () => {
                 path="mavzulashtirilganTestlar"
                 element={<MavzulashtirilganTest />}
               />
-                <Route path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar" element={<AynanMavzulashtirilganTestlar/>}/> {/* Z3atdm5 */}
+              <Route
+                path="mavzulashtirilganTestlar/aynanMavzulashtirilganTestlar"
+                element={<AynanMavzulashtirilganTestlar />}
+              />
               <Route path="imtihon2050" element={<Imtihon2050 />} />
-              <Route path="imtihon2050natija" element={<Imtihon2050natija />} /> {/* Add new route */}
-              <Route path="blocktest" element={<BlockTest />} /> {/* Add new route */}
+              <Route
+                path="imtihon2050natija"
+                element={<Imtihon2050natija />}
+              />
+              <Route path="blocktest" element={<BlockTest />} />
+              <Route path="imtihon-biletlar" element={<ImtihonBiletlar />} />
               <Route index element={<UserMain />} />
             </Route>
 
