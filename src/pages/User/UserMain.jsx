@@ -164,7 +164,19 @@ const UserMain = () => {
   }
 
   if (user === null) {
-    return <div className="p-6 text-white">Yuklanmoqda...</div>;
+    return (
+      <div className="p-6 text-white">
+        {selectedLanguage === "UZ"
+          ? "Yuklanmoqda..."
+          : selectedLanguage === "KK"
+          ? "Jükteleu..."
+          : selectedLanguage === "УЗ"
+          ? "Юкланмоқда..."
+          : selectedLanguage === "RU"
+          ? "Загрузка..."
+          : ""}
+      </div>
+    );
   }
 
   return (
@@ -223,13 +235,30 @@ const UserMain = () => {
                       to="/user/imtihon-biletlar"
                       className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-[1.5rem]"
                     >
-                      Test
+                      {selectedLanguage === "UZ"
+                        ? "Test"
+                        : selectedLanguage === "KK"
+                        ? "Test"
+                        : selectedLanguage === "УЗ"
+                        ? "Тест"
+                        : selectedLanguage === "RU"
+                        ? "Тест"
+                        : ""}
                     </Link>
+
                     <Link
                       to="/user/imtihon-biletlar-javoblar"
                       className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
                     >
-                      Test javoblari
+                      {selectedLanguage === "UZ"
+                        ? "Test javoblari"
+                        : selectedLanguage === "KK"
+                        ? "Test jawapları"
+                        : selectedLanguage === "УЗ"
+                        ? "Тест жавоблари"
+                        : selectedLanguage === "RU"
+                        ? "Ответы теста"
+                        : ""}
                     </Link>
                   </div>
                 </div>
@@ -271,13 +300,30 @@ const UserMain = () => {
                         to="/user/imtihon-biletlar"
                         className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-[1.5rem]"
                       >
-                        Test
+                        {selectedLanguage === "UZ"
+                          ? "Test"
+                          : selectedLanguage === "KK"
+                          ? "Test"
+                          : selectedLanguage === "УЗ"
+                          ? "Тест"
+                          : selectedLanguage === "RU"
+                          ? "Тест"
+                          : ""}
                       </Link>
+
                       <Link
                         to="/user/imtihon-biletlar-javoblar"
                         className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
                       >
-                        Test javoblari
+                        {selectedLanguage === "UZ"
+                          ? "Test javoblari"
+                          : selectedLanguage === "KK"
+                          ? "Test jawapları"
+                          : selectedLanguage === "УЗ"
+                          ? "Тест жавоблари"
+                          : selectedLanguage === "RU"
+                          ? "Ответы теста"
+                          : ""}
                       </Link>
                     </div>
                   </div>
@@ -291,7 +337,15 @@ const UserMain = () => {
                   disabled={imtihonLoading}
                 >
                   {imtihonLoading
-                    ? "Yuklanmoqda..."
+                    ? selectedLanguage === "UZ"
+                      ? "Yuklanmoqda..."
+                      : selectedLanguage === "KK"
+                      ? "Jükteleu..."
+                      : selectedLanguage === "УЗ"
+                      ? "Юкланмоқда..."
+                      : selectedLanguage === "RU"
+                      ? "Загрузка..."
+                      : ""
                     : getButtonText("imtihon2050")}
                 </button>
                 {isModalOpen && (
@@ -334,7 +388,15 @@ const UserMain = () => {
                 disabled={blockTestLoading}
               >
                 {blockTestLoading
-                  ? "Yuklanmoqda..."
+                  ? selectedLanguage === "UZ"
+                    ? "Yuklanmoqda..."
+                    : selectedLanguage === "KK"
+                    ? "Jükteleu..."
+                    : selectedLanguage === "УЗ"
+                    ? "Юкланмоқда..."
+                    : selectedLanguage === "RU"
+                    ? "Загрузка..."
+                    : ""
                   : getButtonText("blokTest")}
               </button>
             </>
