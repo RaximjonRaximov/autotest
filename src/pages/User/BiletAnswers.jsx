@@ -21,7 +21,6 @@ function BiletAnswers() {
 
     try {
       const idResponse = await api.get(`/questionsId/${id}/`);
-      console.log("Fetched Question IDs:", idResponse.data);
       const questionIds = idResponse.data.questions_id || [];
 
       if (!questionIds.length) {
@@ -33,7 +32,6 @@ function BiletAnswers() {
         api.get(`/questions/${questionId}/`).then((res) => res.data)
       );
       const questionData = await Promise.all(questionPromises);
-      console.log("Fetched Question Details:", questionData);
 
       if (!questionData.length || questionData.some((q) => !q.question || !q.answers)) {
         setError("Invalid or incomplete question data received.");
@@ -104,16 +102,16 @@ function BiletAnswers() {
   };
 
   if (loading) {
-    return <div className="p-6 text-white">Yuklanmoqda...</div>;
+    return <div className="p-4 sm:p-6 text-white">Yuklanmoqda...</div>;
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">{error}</div>;
+    return <div className="p-4 sm:p-6 text-red-500">{error}</div>;
   }
 
   if (!id || questions.length === 0) {
     return (
-      <div className="p-6 text-white">
+      <div className="p-4 sm:p-6 text-white">
         <p>No questions available. Please select a valid Table ID.</p>
       </div>
     );
@@ -124,18 +122,18 @@ function BiletAnswers() {
 
   return (
     <div
-      className="min-h-screen p-6"
+      className="min-h-screen p-4 sm:p-6"
       style={{
         backgroundImage: `url('/loginBg.png')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="flex justify-end items-center mb-[33px]">
+      <div className="flex justify-end items-center mb-4 sm:mb-[33px]">
         <button
           onClick={handleExit}
-          className="px-12 py-1 text-white font-regular rounded-lg text-[22px] bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
-                     shadow-[0px_0px_30px_0px_#FF7F5080] transition-all duration-300 hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105"
+          className="px-6 sm:px-12 py-1 text-white font-regular rounded-lg text-lg sm:text-[22px] bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
+                     shadow-[0px_0px_20px_0px_#FF7F5080] sm:shadow-[0px_0px_30px_0px_#FF7F5080] transition-all duration-300 hover:shadow-[0px_0px_30px_0px_#FF7F5080] sm:hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105"
         >
           {selectedLanguage === "UZ"
             ? "Chiqish"
@@ -148,8 +146,8 @@ function BiletAnswers() {
       </div>
 
       <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
-      <div className="flex space-x-4">
-        <div className="space-y-4 flex-1">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div className="space-y-2 sm:space-y-4 flex-1">
           {currentQuestion.answers?.map((answer, index) => (
             <Javob
               key={answer.id}
@@ -161,31 +159,31 @@ function BiletAnswers() {
             />
           ))}
         </div>
-        <div className="flex-1 rounded-[12px]">
+        <div className="flex-1 rounded-lg sm:rounded-[12px]">
           <img
             src={imageUrl}
             alt="Question Image"
-            className="w-[350px] object-cover rounded-[12px]"
+            className="w-full sm:w-[350px] object-cover rounded-lg sm:rounded-[12px]"
           />
         </div>
       </div>
-      <div className="flex justify-center items-center mt-6 space-x-4 pagination">
+      <div className="flex justify-center items-center mt-4 sm:mt-6 space-x-4 pagination">
         <button
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0}
-          className={`px-4 py-2 bg-white text-black border border-gray-300 rounded-md text-2xl ${
+          className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl ${
             currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           {"<<"}
         </button>
-        <span className="px-4 py-2 bg-gray-800 text-white rounded-md text-2xl">
+        <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
           {currentQuestionIndex + 1}/{questions.length}
         </span>
         <button
           onClick={handleNext}
           disabled={currentQuestionIndex === questions.length - 1}
-          className={`px-4 py-2 bg-white text-black border border-gray-300 rounded-md text-2xl ${
+          className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl ${
             currentQuestionIndex === questions.length - 1
               ? "opacity-50 cursor-not-allowed"
               : ""

@@ -8,22 +8,21 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useAuth } from "../../context/AuthContext";
 
 const BiletTest = () => {
-  const id = useSelector((state) => state.cart.CurrentBiletId); // Single ID from Redux
+  const id = useSelector((state) => state.cart.CurrentBiletId);
   const navigate = useNavigate();
   const { selectedLanguage } = useLanguage();
-  const [questions, setQuestions] = useState([]); // Array of question objects
+  const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [answeredQuestions, setAnsweredQuestions] = useState({});
   const [answerCorrectness, setAnswerCorrectness] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const initialTime = 25 * 60; // 25 minutes in seconds
+  const initialTime = 25 * 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const { user } = useAuth();
   const userId = user ? user.user_id : null;
 
-  // Function to clear the database
   const clearDatabase = async () => {
     try {
       await api.get("/user-results/");
@@ -33,7 +32,6 @@ const BiletTest = () => {
     }
   };
 
-  // Function to reset all test-related states
   const resetTest = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
@@ -45,7 +43,6 @@ const BiletTest = () => {
     setLoading(false);
   };
 
-  // Fetch questions based on CurrentBiletId
   useEffect(() => {
     resetTest();
     clearDatabase();
@@ -54,9 +51,7 @@ const BiletTest = () => {
       setLoading(true);
       setError(null);
       try {
-        // Step 1: Fetch the question IDs
         const idResponse = await api.get(`/questionsId/${id}/`);
-        console.log("ID Response:", idResponse.data);
         const questionIds = idResponse.data.questions_id || [];
 
         if (!questionIds.length) {
@@ -65,12 +60,10 @@ const BiletTest = () => {
           return;
         }
 
-        // Step 2: Fetch full question details for each ID
         const questionPromises = questionIds.map((questionId) =>
           api.get(`/questions/${questionId}/`).then((res) => res.data)
         );
         const questionData = await Promise.all(questionPromises);
-        console.log("Fetched Questions:", questionData);
         setQuestions(questionData);
       } catch (err) {
         if (err.response && err.response.status === 401) {
@@ -89,7 +82,6 @@ const BiletTest = () => {
     }
   }, [id, navigate]);
 
-  // Timer logic
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -104,7 +96,6 @@ const BiletTest = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Handle answer selection and submit to backend
   const handleAnswerSelect = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
@@ -113,8 +104,6 @@ const BiletTest = () => {
         question_id: questionId.toString(),
         answer_id: answerId.toString(),
       });
-      console.log("Submit Answer Response:", response.data);
-
       const isCorrect = response.data.is_correct;
 
       setSelectedAnswers((prev) => ({
@@ -136,22 +125,16 @@ const BiletTest = () => {
     }
   };
 
-  // Handle navigation between questions
   const handleQuestionChange = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Handle finishing the test
   const handleFinish = async () => {
     try {
       const timeTaken = initialTime - timeLeft;
-
-      // First get the user results
       const getResponse = await api.get("/user-results/");
-      console.log("User Results Response:", getResponse.data);
       const { correct, incorrect } = getResponse.data;
 
-      // Prepare data for POST request
       const postData = {
         user_id: userId,
         table_id: id,
@@ -159,14 +142,8 @@ const BiletTest = () => {
         incorrect: 20 - correct,
       };
 
-      // Save the results
       const postResponse = await api.post("/save-correct/", postData);
       console.log("Save Results Response:", postResponse.data);
-
-      console.log("userId", userId);
-      console.log("correct", correct);
-      console.log("incorrect", 20 - correct);
-      console.log("tableId", id);
 
       navigate("/user/imtihon2050natija", {
         state: {
@@ -180,22 +157,21 @@ const BiletTest = () => {
       });
     } catch (error) {
       console.error("Error in handleFinish:", error);
-      // Handle error appropriately
     }
   };
 
   if (loading) {
-    return <div className="p-6 text-white">Yuklanmoqda...</div>;
+    return <div className="p-4 sm:p-6 text-white">Yuklanmoqda...</div>;
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">{error}</div>;
+    return <div className="p-4 sm:p-6 text-red-500">{error}</div>;
   }
 
   if (!id || questions.length === 0) {
     return (
-      <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold mb-4">Bilet Test</h1>
+      <div className="p-4 sm:p-6 text-white">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">Bilet Test</h1>
         <p>No questions available. Please select a valid Bilet ID.</p>
       </div>
     );
@@ -218,9 +194,9 @@ const BiletTest = () => {
     : "/avtotest.jpg";
 
   return (
-    <div className="p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex px-2 py-1">
+    <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
+        <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questions.map((_, index) => {
             const questionId = questions[index]?.question?.id;
             const isAnswered = !!answeredQuestions[questionId];
@@ -238,7 +214,7 @@ const BiletTest = () => {
               <button
                 key={index}
                 onClick={() => handleQuestionChange(index)}
-                className={`mx-[0.05rem] w-12 h-12 flex items-center justify-center ${buttonColorClass}`}
+                className={`w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base`}
               >
                 {index + 1}
               </button>
@@ -247,28 +223,23 @@ const BiletTest = () => {
         </div>
         <button
           onClick={handleFinish}
-          className="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-3 sm:px-4 py-1 sm:py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base"
         >
           {selectedLanguage === "UZ"
-    ? "Tugatish"
-    : selectedLanguage === "KK"
-    ? "Ayaqtaý"
-    : selectedLanguage === "УЗ"
-    ? "Тугатиш"
-    : selectedLanguage === "RU"
-    ? "Закончить"
-    : ""}
+            ? "Tugatish"
+            : selectedLanguage === "KK"
+            ? "Ayaqtaý"
+            : selectedLanguage === "УЗ"
+            ? "Тугатиш"
+            : "Закончить"}
         </button>
       </div>
 
-      <Savol
-        text={questionText}
-        timeLeft={timeLeft}
-      />
+      <Savol text={questionText} timeLeft={timeLeft} />
 
-      <div className="flex justify-between flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
-          <div className="space-y-4">
+          <div className="space-y-2 sm:space-y-4">
             {answers.map((answer, idx) => {
               const label = `F${idx + 1}`;
               const answerText =
@@ -280,8 +251,7 @@ const BiletTest = () => {
                   ? answer.LanKarakalpak
                   : answer.LanRu;
 
-              const isAnswered =
-                !!answeredQuestions[currentQuestion.question.id];
+              const isAnswered = !!answeredQuestions[currentQuestion.question.id];
               return (
                 <Javob
                   key={answer.id}
@@ -301,7 +271,7 @@ const BiletTest = () => {
           </div>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 mt-4 sm:mt-0">
           <img
             src={imageUrl}
             alt="Question Image"
