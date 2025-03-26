@@ -77,7 +77,7 @@ const Imtihon2050natija = () => {
             );
           })}
         </div>
-        <div className="mt-2 sm:mt-0 sm:absolute sm:right-8 sm:top-6 bg-green-700 text-white rounded-full w-16 sm:w-18 h-16 sm:h-17 flex items-center justify-center border-2 border-green-500 text-sm sm:text-base">
+        <div className="mt-2 sm:mt-0 sm:absolute sm:right-18 sm:top-24 bg-green-700 text-white rounded-full w-16 sm:w-18 h-16 sm:h-17 flex items-center justify-center border-2 border-green-500 text-sm sm:text-base">
           {formattedTimeTaken}
         </div>
       </div>

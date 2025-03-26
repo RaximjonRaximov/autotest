@@ -1,7 +1,7 @@
 import React from 'react';
 
 const JavobBlockTest = ({ label, text, onClick, isSelected, isAnswered, isAnswerCorrect, isUserAnswerCorrect }) => {
-  // Styling for the label (F1, F2, etc.)
+  // Styling for the label (F1, F2, etc.) and content
   let labelBackgroundClass = 'bg-white text-black'; // Default label background
   let textBackgroundClass = 'bg-gray-200'; // Default text background
 
@@ -30,11 +30,13 @@ const JavobBlockTest = ({ label, text, onClick, isSelected, isAnswered, isAnswer
       className={`flex items-stretch text-black rounded-lg mb-2 sm:mb-4 cursor-pointer ${isAnswered ? 'pointer-events-none' : ''}`}
       onClick={isAnswered ? null : onClick}
     >
+      {/* Label (F1, F2, etc.) */}
       <span
-        className={`flex items-center justify-center font-bold rounded-l-lg px-2 sm:px-3 py-1 sm:py-2 h-full ${labelBackgroundClass}`}
+        className={`flex items-center justify-center font-bold rounded-l-lg px-2 sm:px-3 py-1 sm:py-2 ${labelBackgroundClass}`}
       >
         {label}
       </span>
+      {/* Content (Answer Text) */}
       <span
         className={`px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base flex-1 rounded-r-lg ${textBackgroundClass}`}
       >

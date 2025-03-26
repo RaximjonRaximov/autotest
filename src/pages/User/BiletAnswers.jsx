@@ -87,7 +87,10 @@ function BiletAnswers() {
     }
   };
 
-  const getLabel = (index) => `F${index + 1}`;
+  const getLabel = (index) => {
+    const labels = ["A", "B", "C", "D", "E"];
+    return labels[index] || `F${index + 1}`;
+  };
 
   const handleExit = () => {
     navigate("/user/imtihon-biletlar-javoblar", { replace: true });
@@ -129,25 +132,64 @@ function BiletAnswers() {
         backgroundPosition: "center",
       }}
     >
-      <div className="flex justify-end items-center mb-4 sm:mb-[33px]">
-        <button
-          onClick={handleExit}
-          className="px-6 sm:px-12 py-1 text-white font-regular rounded-lg text-lg sm:text-[22px] bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
-                     shadow-[0px_0px_20px_0px_#FF7F5080] sm:shadow-[0px_0px_30px_0px_#FF7F5080] transition-all duration-300 hover:shadow-[0px_0px_30px_0px_#FF7F5080] sm:hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105"
-        >
-          {selectedLanguage === "UZ"
-            ? "Chiqish"
-            : selectedLanguage === "KK"
-            ? "Shyǵý"
-            : selectedLanguage === "УЗ"
-            ? "Чиқиш"
-            : "Выход"}
-        </button>
-      </div>
+      {/* Mobile Layout */}
+      <div className="sm:hidden flex flex-col space-y-4">
+        {/* Header: Previous/Next Buttons */}
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            className={`px-3 py-1 bg-white text-black border border-gray-300 rounded-md text-xl
+              ${currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {"<<"}
+          </button>
+          <span className="px-3 py-1 bg-gray-800 text-white rounded-md text-xl">
+            {currentQuestionIndex + 1}/{questions.length}
+          </span>
+          <button
+            onClick={handleNext}
+            disabled={currentQuestionIndex === questions.length - 1}
+            className={`px-3 py-1 bg-white text-black border border-gray-300 rounded-md text-xl
+              ${currentQuestionIndex === questions.length - 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {">>"}
+          </button>
+        </div>
 
-      <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        <div className="space-y-2 sm:space-y-4 flex-1">
+        {/* Chiqish Button (below Previous/Next, left-aligned) */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={handleExit}
+            className="px-6 py-1 text-white font-regular rounded-lg text-lg 
+                      bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
+                      shadow-[0px_0px_20px_0px_#FF7F5080] transition-all duration-300 
+                      hover:shadow-[0px_0px_30px_0px_#FF7F5080] hover:scale-105"
+          >
+            {selectedLanguage === "UZ"
+              ? "Chiqish"
+              : selectedLanguage === "KK"
+              ? "Shyǵý"
+              : selectedLanguage === "УЗ"
+              ? "Чиқиш"
+              : "Выход"}
+          </button>
+        </div>
+
+        {/* Question */}
+        <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
+
+        {/* Image */}
+        <div className="flex-1 rounded-lg">
+          <img
+            src={imageUrl}
+            alt="Question Image"
+            className="w-full object-cover rounded-lg"
+          />
+        </div>
+
+        {/* Answers */}
+        <div className="space-y-2">
           {currentQuestion.answers?.map((answer, index) => (
             <Javob
               key={answer.id}
@@ -159,38 +201,72 @@ function BiletAnswers() {
             />
           ))}
         </div>
-        <div className="flex-1 rounded-lg sm:rounded-[12px]">
-          <img
-            src={imageUrl}
-            alt="Question Image"
-            className="w-full sm:w-[350px] object-cover rounded-lg sm:rounded-[12px]"
-          />
-        </div>
       </div>
-      <div className="flex justify-center items-center mt-4 sm:mt-6 space-x-4 pagination">
-        <button
-          onClick={handlePrevious}
-          disabled={currentQuestionIndex === 0}
-          className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl ${
-            currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {"<<"}
-        </button>
-        <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
-          {currentQuestionIndex + 1}/{questions.length}
-        </span>
-        <button
-          onClick={handleNext}
-          disabled={currentQuestionIndex === questions.length - 1}
-          className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl ${
-            currentQuestionIndex === questions.length - 1
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
-        >
-          {">>"}
-        </button>
+
+      {/* Desktop Layout (original unchanged) */}
+      <div className="hidden sm:block">
+        <div className="flex justify-end items-center mb-4 sm:mb-[33px]">
+          <button
+            onClick={handleExit}
+            className="px-6 sm:px-12 py-1 text-white font-regular rounded-lg text-lg sm:text-[22px] 
+                      bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
+                      shadow-[0px_0px_20px_0px_#FF7F5080] sm:shadow-[0px_0px_30px_0px_#FF7F5080] 
+                      transition-all duration-300 hover:shadow-[0px_0px_30px_0px_#FF7F5080] 
+                      sm:hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105"
+          >
+            {selectedLanguage === "UZ"
+              ? "Chiqish"
+              : selectedLanguage === "KK"
+              ? "Shyǵý"
+              : selectedLanguage === "УЗ"
+              ? "Чиқиш"
+              : "Выход"}
+          </button>
+        </div>
+
+        <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="space-y-2 sm:space-y-4 flex-1">
+            {currentQuestion.answers?.map((answer, index) => (
+              <Javob
+                key={answer.id}
+                label={getLabel(index)}
+                text={getAnswerText(answer)}
+                isCorrect={answer.is_correct}
+                showCorrect={true}
+                disabled={true}
+              />
+            ))}
+          </div>
+          <div className="flex-1 rounded-lg sm:rounded-[12px]">
+            <img
+              src={imageUrl}
+              alt="Question Image"
+              className="w-full sm:w-[350px] object-cover rounded-lg sm:rounded-[12px]"
+            />
+          </div>
+        </div>
+        <div className="flex justify-center items-center mt-4 sm:mt-6 space-x-4 pagination">
+          <button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl
+              ${currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {"<<"}
+          </button>
+          <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
+            {currentQuestionIndex + 1}/{questions.length}
+          </span>
+          <button
+            onClick={handleNext}
+            disabled={currentQuestionIndex === questions.length - 1}
+            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl
+              ${currentQuestionIndex === questions.length - 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {">>"}
+          </button>
+        </div>
       </div>
     </div>
   );

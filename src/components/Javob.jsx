@@ -31,12 +31,12 @@ const Javob = ({ label, text, onClick, isSelected, isCorrect, isAnswered, showCo
       onClick={isAnswered ? null : onClick}
     >
       <span
-        className={`flex items-center justify-center font-bold rounded-l-lg px-2 sm:px-3 py-1 sm:py-2 h-full ${labelBackgroundClass}`}
+        className={`flex items-center justify-center font-bold rounded-l-lg px-4 sm:px-6 py-2 sm:py-3 min-h-[48px] sm:min-h-[56px] ${labelBackgroundClass}`}
       >
         {label}
       </span>
       <span
-        className={`px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base flex-1 rounded-r-lg ${textBackgroundClass}`}
+        className={`px-2 sm:px-4 py-2 sm:py-3 text-sm sm:text-base flex-1 rounded-r-lg min-h-[48px] sm:min-h-[56px] flex items-center ${textBackgroundClass}`}
       >
         {text}
       </span>
