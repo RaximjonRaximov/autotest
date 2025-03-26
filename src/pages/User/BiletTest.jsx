@@ -195,8 +195,9 @@ const BiletTest = () => {
 
   return (
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
+      {/* Pagination and Finish Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
-        <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
+        <div className="grid grid-cols-10 gap-3 sm:gap-2 px-2 py-1">
           {questions.map((_, index) => {
             const questionId = questions[index]?.question?.id;
             const isAnswered = !!answeredQuestions[questionId];
@@ -214,7 +215,7 @@ const BiletTest = () => {
               <button
                 key={index}
                 onClick={() => handleQuestionChange(index)}
-                className={`w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base`}
+                className={`w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base `}
               >
                 {index + 1}
               </button>
@@ -235,9 +236,52 @@ const BiletTest = () => {
         </button>
       </div>
 
+      {/* Question Text and Timer */}
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
+      {/* Mobile: Picture and Answers (stacked) */}
+      <div className="md:hidden">
+        <div className="flex justify-center mb-4">
+          <img
+            src={imageUrl}
+            alt="Question Image"
+            className="w-full max-w-[350px] object-cover rounded-lg shadow-lg"
+          />
+        </div>
+        <div className="space-y-2">
+          {answers.map((answer, idx) => {
+            const label = `F${idx + 1}`;
+            const answerText =
+              selectedLanguage === "UZ"
+                ? answer.LanUz
+                : selectedLanguage === "УЗ"
+                ? answer.LanKrill
+                : selectedLanguage === "KK"
+                ? answer.LanKarakalpak
+                : answer.LanRu;
+
+            const isAnswered = !!answeredQuestions[currentQuestion.question.id];
+            return (
+              <Javob
+                key={answer.id}
+                label={label}
+                text={answerText}
+                onClick={() =>
+                  handleAnswerSelect(currentQuestion.question.id, answer.id)
+                }
+                isSelected={
+                  selectedAnswers[currentQuestion.question.id] === answer.id
+                }
+                isCorrect={answer.is_correct}
+                isAnswered={isAnswered}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Desktop: Picture and Answers (side by side) */}
+      <div className="hidden md:flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
           <div className="space-y-2 sm:space-y-4">
             {answers.map((answer, idx) => {
@@ -270,7 +314,6 @@ const BiletTest = () => {
             })}
           </div>
         </div>
-
         <div className="flex-1 mt-4 sm:mt-0">
           <img
             src={imageUrl}
