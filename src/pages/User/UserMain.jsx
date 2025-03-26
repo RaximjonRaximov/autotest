@@ -222,7 +222,7 @@ const UserMain = () => {
                       Test
                     </Link>
                     <Link
-                      to="/user/imtihon-biletlar-javoblari"
+                      to="/user/imtihon-biletlar-javoblar"
                       className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
                     >
                       Test javoblari
