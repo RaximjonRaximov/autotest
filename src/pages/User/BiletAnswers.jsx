@@ -88,8 +88,7 @@ function BiletAnswers() {
   };
 
   const getLabel = (index) => {
-    const labels = ["A", "B", "C", "D", "E"];
-    return labels[index] || `F${index + 1}`;
+    return `F${index + 1}`;
   };
 
   const handleExit = () => {

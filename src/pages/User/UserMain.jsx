@@ -179,7 +179,7 @@ const UserMain = () => {
               {isModalOpen2 && (
                 <div
                   ref={modalRef2}
-                  className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full sm:w-78 rounded-lg shadow-lg py-6 sm:py-[3rem] px-4 sm:px-[6rem] z-10"
+                  className="absolute top-0 left-0 w-full rounded-lg shadow-lg py-6 sm:py-[3rem] px-4 sm:px-6 z-10"
                   style={{
                     background:
                       "linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(50, 50, 50, 0.8) 100%)",
