@@ -5,9 +5,8 @@ import { useDispatch } from "react-redux";
 import { cartActions } from "../../store";
 import { useAuth } from "../../context/AuthContext";
 
-const ImtihonBiletlar = () => {
+const ImtihonBiletlarJavoblari = () => {
   const [tables, setTables] = useState([]);
-  const [userResults, setUserResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,17 +14,18 @@ const ImtihonBiletlar = () => {
 
   const { user } = useAuth();
   const userId = user ? user.user_id : null;
-  console.log("User object:", user); // Log the full user object
+  console.log("User object:", user);
   console.log("userId:", userId);
 
   const handleBilet = (id) => {
-    navigate("/user/bilet-test", { replace: true });
+    // Navigate to the new answers page with tableId and set it in Redux
+    navigate("/user/bilet-answers", { state: { tableId: id } });
     dispatch(cartActions.setCurrentBiletId(id));
+    console.log(`[handleBilet] Navigating to /user/bilet-answers with tableId: ${id}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      // Check if userId is valid
       if (!userId) {
         console.log("No userId, skipping fetch.");
         setError("Foydalanuvchi topilmadi. Iltimos, tizimga kiring.");
@@ -34,7 +34,6 @@ const ImtihonBiletlar = () => {
       }
 
       try {
-        // Fetch tables
         console.log("Fetching tables...");
         const tablesResponse = await api.get("/tables/");
         console.log("Tables response:", tablesResponse.data);
@@ -45,26 +44,7 @@ const ImtihonBiletlar = () => {
           console.warn("No tables found in response.");
         }
 
-        // Fetch user results
-        console.log(`Fetching results for userId: ${userId}...`);
-        const resultsResponse = await api.get(`/user-correct/${userId}/`);
-        console.log("Results response:", resultsResponse.data);
-        const results = Array.isArray(resultsResponse.data)
-          ? resultsResponse.data
-          : [];
-        setUserResults(results);
-
-        // Combine tables with results
-        const tablesWithResults = sortedTables.map((table) => {
-          const result = results.find((r) => r.table === table.id);
-          return {
-            ...table,
-            correct: result ? result.correct : 0,
-            incorrect: result ? result.incorrect : 0,
-          };
-        });
-
-        setTables(tablesWithResults);
+        setTables(sortedTables);
         setLoading(false);
       } catch (err) {
         console.error("Fetch error:", err.response ? err.response : err);
@@ -97,7 +77,7 @@ const ImtihonBiletlar = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">
-        Imtihon biletlari
+        Imtihon biletlari javoblari
       </h1>
 
       <div className="grid grid-cols-5 gap-4 max-w-4xl">
@@ -105,21 +85,9 @@ const ImtihonBiletlar = () => {
           <button
             key={table.id}
             onClick={() => handleBilet(table.id)}
-            className="flex flex-col items-center justify-center space-x-3 py-3 px-6 rounded-lg shadow-md transition duration-300 hover:opacity-90 bg-gradient-to-b from-[#B4DFEF] to-[#38BEEF] text-black font-semibold"
+            className="py-3 px-6 rounded-lg shadow-md transition duration-300 hover:opacity-90 bg-gradient-to-b from-[#B4DFEF] to-[#38BEEF] text-black font-semibold"
           >
             <span>{table.name}</span>
-            {table.correct !== 0 || table.incorrect !== 0 ? (
-              <div className="flex space-x-5">
-                <div className="flex items-center space-x-1">
-                  <span className="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
-                  <span>{table.correct}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <span className="w-3 h-3 bg-red-500 rounded-full inline-block"></span>
-                  <span>{table.incorrect}</span>
-                </div>
-              </div>
-            ) : null}
           </button>
         ))}
       </div>
@@ -127,4 +95,4 @@ const ImtihonBiletlar = () => {
   );
 };
 
-export default ImtihonBiletlar;
+export default ImtihonBiletlarJavoblari;

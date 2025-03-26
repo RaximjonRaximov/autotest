@@ -5,7 +5,9 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 const loadStateFromSessionStorage = () => {
   try {
     const serializedState = sessionStorage.getItem("cartState");
-    return serializedState ? JSON.parse(serializedState) : { test: [], categoryId: null };
+    return serializedState
+      ? JSON.parse(serializedState)
+      : { test: [], categoryId: null };
   } catch (err) {
     console.error("Error loading state:", err);
     return { test: [], categoryId: null };
@@ -34,9 +36,12 @@ const cartSlice = createSlice({
     setCategoryId: (state, action) => {
       state.categoryId = action.payload;
     },
-    setCurrentBiletId:(state,action) =>{
+    setCurrentBiletId: (state, action) => {
       state.CurrentBiletId = action.payload;
-    }
+    },
+    setUserId: (state, action) => {
+      state.userId = action.payload;
+    },
   },
 });
 

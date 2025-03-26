@@ -28,6 +28,8 @@ import Imtihon2050natija from "./pages/User/Imtihon2050natija";
 import BlockTest from "./pages/User/BlockTest";
 import ImtihonBiletlar from "./pages/User/ImtihonBiletlar";
 import BiletTest from "./pages/User/BiletTest";
+import ImtihonBiletlarJavoblari from "./pages/User/ImtihonBiletlarJavoblari";
+import BiletAnswers from "./pages/User/BiletAnswers";
 
 // Asosiy sahifa komponenti
 const Home = () => {
@@ -101,7 +103,9 @@ const App = () => {
               />
               <Route path="blocktest" element={<BlockTest />} />
               <Route path="imtihon-biletlar" element={<ImtihonBiletlar />} />
-              <Route path="bilet-test" element={<BiletTest />} /> {/* Moved out of nesting */}
+              <Route path="imtihon-biletlar-javoblar" element={<ImtihonBiletlarJavoblari />} />
+              <Route path="bilet-answers" element={<BiletAnswers />} />
+              <Route path="bilet-test" element={<BiletTest />} />
               <Route index element={<UserMain />} />
             </Route>
 
