@@ -74,7 +74,7 @@ const Login = () => {
             className="text-4xl font-extrabold bg-clip-text text-transparent"
             style={{ backgroundImage: "linear-gradient(to right, white, #4B5563)" }}
           >
-            Primer Avtotest
+            Premier Avtotest
           </h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
