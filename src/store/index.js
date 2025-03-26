@@ -1,4 +1,3 @@
-// store/index.js
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from sessionStorage
@@ -7,10 +6,10 @@ const loadStateFromSessionStorage = () => {
     const serializedState = sessionStorage.getItem("cartState");
     return serializedState
       ? JSON.parse(serializedState)
-      : { test: [], categoryId: null };
+      : { test: [], categoryId: null, role_id: null }; // role_id qo'shildi
   } catch (err) {
     console.error("Error loading state:", err);
-    return { test: [], categoryId: null };
+    return { test: [], categoryId: null, role_id: null };
   }
 };
 
@@ -41,6 +40,9 @@ const cartSlice = createSlice({
     },
     setUserId: (state, action) => {
       state.userId = action.payload;
+    },
+    setRole_id: (state, action) => {
+      state.role_id = action.payload; // role_id ga qiymat beramiz
     },
   },
 });
