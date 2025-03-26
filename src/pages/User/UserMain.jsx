@@ -174,7 +174,11 @@ const UserMain = () => {
     >
       <div className="flex flex-col items-center pt-8">
         <div className="flex items-center mb-8">
-          <img src="/logo.png" alt="Primer Avtotest Logo" className="h-34" />
+          <img
+            src="/logo.png"
+            alt="Primer Avtotest Logo"
+            className="h-34"
+          />
           <h1
             className="text-4xl font-extrabold bg-clip-text text-transparent"
             style={{
@@ -202,7 +206,7 @@ const UserMain = () => {
               {isModalOpen2 && (
                 <div
                   ref={modalRef2}
-                  className="absolute top-[0rem] left-1/2 transform -translate-x-1/2 w-78 rounded-lg shadow-lg py-[3rem] px-[6rem] z-10"
+                  className="absolute top-[0rem] left-1/2 transform -translate-x-1/2 w-full rounded-lg shadow-lg py-[3rem] px-[6rem] z-10"
                   style={{
                     background:
                       "linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(50, 50, 50, 0.8) 100%)",
@@ -222,7 +226,7 @@ const UserMain = () => {
                       Test
                     </Link>
                     <Link
-                      to="/user/imtihon-biletlar-javoblari"
+                      to="/user/imtihon-biletlar-javoblar"
                       className="bg-white text-black px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
                     >
                       Test javoblari
