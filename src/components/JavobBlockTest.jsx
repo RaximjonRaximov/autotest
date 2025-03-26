@@ -1,12 +1,12 @@
 import React from 'react';
 
 const JavobBlockTest = ({ label, text, onClick, isSelected, isAnswered, isAnswerCorrect, isUserAnswerCorrect }) => {
-  // Styling for the label (A, B, C)
+  // Styling for the label (F1, F2, etc.)
   let labelBackgroundClass = 'bg-white text-black'; // Default label background
   let textBackgroundClass = 'bg-gray-200'; // Default text background
 
   if (isSelected && !isAnswered) {
-    // First click: highlight in yellow
+    // First click: highlight in yellow (changed to blue for consistency)
     labelBackgroundClass = 'bg-blue-500 text-black';
     textBackgroundClass = 'bg-blue-200';
   } else if (isAnswered) {
@@ -27,17 +27,19 @@ const JavobBlockTest = ({ label, text, onClick, isSelected, isAnswered, isAnswer
 
   return (
     <div
-      className={`flex items-center text-black rounded-lg mb-4 cursor-pointer ${textBackgroundClass} ${
-        isAnswered ? 'pointer-events-none' : ''
-      }`} // Disable clicks if answered
+      className={`flex items-stretch text-black rounded-lg mb-2 sm:mb-4 cursor-pointer ${isAnswered ? 'pointer-events-none' : ''}`}
       onClick={isAnswered ? null : onClick}
     >
       <span
-        className={`font-bold rounded-l-lg px-3 py-2 ${labelBackgroundClass}`}
+        className={`flex items-center justify-center font-bold rounded-l-lg px-2 sm:px-3 py-1 sm:py-2 h-full ${labelBackgroundClass}`}
       >
         {label}
       </span>
-      <span className="px-4">{text}</span>
+      <span
+        className={`px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base flex-1 rounded-r-lg ${textBackgroundClass}`}
+      >
+        {text}
+      </span>
     </div>
   );
 };

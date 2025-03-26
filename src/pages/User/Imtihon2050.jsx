@@ -20,17 +20,15 @@ const Imtihon2050 = () => {
   const initialTime = 25 * 60; // 25 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
-  // Function to clear the database
   const clearDatabase = async () => {
     try {
-      await api.get('/user-results/'); // Assumed endpoint to clear the database
+      await api.get('/user-results/');
       console.log('Database cleared successfully on refresh');
     } catch (err) {
       console.error('Error clearing database on refresh:', err);
     }
   };
 
-  // Function to reset all test-related states
   const resetTest = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
@@ -42,15 +40,10 @@ const Imtihon2050 = () => {
     setLoading(false);
   };
 
-  // Run on component mount (happens on every refresh)
   useEffect(() => {
-    // Reset all states
     resetTest();
-
-    // Clear the database
     clearDatabase();
 
-    // Fetch questions after resetting
     const fetchQuestions = async () => {
       setLoading(true);
       setError(null);
@@ -75,9 +68,8 @@ const Imtihon2050 = () => {
     if (questionIds.length > 0) {
       fetchQuestions();
     }
-  }, [questionIds, navigate]); // Dependencies ensure this runs on mount and when questionIds or navigate change
+  }, [questionIds, navigate]);
 
-  // Timer logic
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -90,9 +82,8 @@ const Imtihon2050 = () => {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []); // Empty dependency array ensures the timer starts fresh on mount
+  }, []);
 
-  // Handle answer selection and submit to backend
   const handleAnswerSelect = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
@@ -101,8 +92,6 @@ const Imtihon2050 = () => {
         question_id: questionId.toString(),
         answer_id: answerId.toString(),
       });
-      console.log('Submit Answer Response:', response.data);
-
       const isCorrect = response.data.is_correct;
 
       setSelectedAnswers((prev) => ({
@@ -124,18 +113,14 @@ const Imtihon2050 = () => {
     }
   };
 
-  // Handle navigation between questions
   const handleQuestionChange = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Handle finishing the test
   const handleFinish = async () => {
     try {
       const timeTaken = initialTime - timeLeft;
       const response = await api.get('/user-results/');
-      console.log('User Results Response:', response.data);
-
       const { correct, incorrect } = response.data;
 
       navigate('/user/imtihon2050natija', {
@@ -149,7 +134,6 @@ const Imtihon2050 = () => {
         },
       });
 
-      // Clear the database after fetching results
       await clearDatabase();
     } catch (err) {
       console.error('Error fetching user results:', err);
@@ -158,17 +142,17 @@ const Imtihon2050 = () => {
   };
 
   if (loading) {
-    return <div className="p-6 text-white">Yuklanmoqda...</div>;
+    return <div className="p-4 sm:p-6 text-white">Yuklanmoqda...</div>;
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">{error}</div>;
+    return <div className="p-4 sm:p-6 text-red-500">{error}</div>;
   }
 
   if (questionIds.length === 0 || questions.length === 0) {
     return (
-      <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold mb-4">Imtihon 20/50</h1>
+      <div className="p-4 sm:p-6 text-white">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">Imtihon 20/50</h1>
         <p>No questions available. Please select 20 or 50 questions.</p>
       </div>
     );
@@ -191,9 +175,9 @@ const Imtihon2050 = () => {
     : '/avtotest.jpg';
 
   return (
-    <div className="p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex px-2 py-1">
+    <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
+        <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questionIds.map((_, index) => {
             const questionId = questions[index]?.question?.id;
             const isAnswered = !!answeredQuestions[questionId];
@@ -211,7 +195,7 @@ const Imtihon2050 = () => {
               <button
                 key={index}
                 onClick={() => handleQuestionChange(index)}
-                className={`mx-[0.05rem] w-12 h-12 flex items-center justify-center ${buttonColorClass}`}
+                className={`w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base`}
               >
                 {index + 1}
               </button>
@@ -220,7 +204,7 @@ const Imtihon2050 = () => {
         </div>
         <button
           onClick={handleFinish}
-          className="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-3 sm:px-4 py-1 sm:py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base"
         >
           {selectedLanguage === "UZ"
             ? "Tugatish"
@@ -228,19 +212,17 @@ const Imtihon2050 = () => {
             ? "Ayaqtaý"
             : selectedLanguage === "УЗ"
             ? "Тугатиш"
-            : selectedLanguage === "RU"
-            ? "Закончить"
-            : ""}
+            : "Закончить"}
         </button>
       </div>
 
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      <div className="flex  justify-between flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
-          <div className="space-y-4">
+          <div className="space-y-2 sm:space-y-4">
             {answers.map((answer, idx) => {
-              const label = `F${idx + 1}`; // Change label to F1, F2, F3, ...
+              const label = `F${idx + 1}`;
               const answerText = selectedLanguage === 'UZ'
                 ? answer.LanUz
                 : selectedLanguage === 'УЗ'
@@ -265,7 +247,7 @@ const Imtihon2050 = () => {
           </div>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 mt-4 sm:mt-0">
           <img
             src={imageUrl}
             alt="Question Image"

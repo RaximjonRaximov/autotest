@@ -14,23 +14,21 @@ const BlockTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [answeredQuestions, setAnsweredQuestions] = useState({});
-  const [answerCorrectness, setAnswerCorrectness] = useState({}); // Tracks if the user's selected answer is correct
+  const [answerCorrectness, setAnswerCorrectness] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const initialTime = 25 * 60; // 25 minutes in seconds
+  const initialTime = 25 * 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
-  // Function to clear the database
   const clearDatabase = async () => {
     try {
-      await api.post('/user-results/reset/'); // Assumed endpoint to clear the database
+      await api.post('/user-results/reset/');
       console.log('Database cleared successfully on refresh');
     } catch (err) {
       console.error('Error clearing database on refresh:', err);
     }
   };
 
-  // Function to reset all test-related states
   const resetTest = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
@@ -42,7 +40,6 @@ const BlockTest = () => {
     setLoading(false);
   };
 
-  // Run on component mount (happens on every refresh)
   useEffect(() => {
     resetTest();
     clearDatabase();
@@ -73,7 +70,6 @@ const BlockTest = () => {
     }
   }, [questionIds, navigate]);
 
-  // Timer logic
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -88,19 +84,15 @@ const BlockTest = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Handle answer click (first click: highlight, second click: submit)
   const handleAnswerClick = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
     if (selectedAnswers[questionId] === answerId) {
-      // Second click on the same answer: submit to API
       try {
         const response = await api.post('/submit-answer/', {
           question_id: questionId.toString(),
           answer_id: answerId.toString(),
         });
-        console.log('Submit Answer Response:', response.data);
-
         const isCorrect = response.data.is_correct;
 
         setAnsweredQuestions((prev) => ({
@@ -116,7 +108,6 @@ const BlockTest = () => {
         console.error('Error submitting answer:', err);
       }
     } else {
-      // First click: highlight the answer in yellow
       setSelectedAnswers((prev) => ({
         ...prev,
         [questionId]: answerId,
@@ -124,18 +115,14 @@ const BlockTest = () => {
     }
   };
 
-  // Handle navigation between questions
   const handleQuestionChange = (index) => {
     setCurrentQuestionIndex(index);
   };
 
-  // Handle finishing the test
   const handleFinish = async () => {
     try {
       const timeTaken = initialTime - timeLeft;
       const response = await api.get('/user-results/');
-      console.log('User Results Response:', response.data);
-
       const { correct, incorrect } = response.data;
 
       navigate('/user/imtihon2050natija', {
@@ -157,17 +144,17 @@ const BlockTest = () => {
   };
 
   if (loading) {
-    return <div className="p-6 text-white">Yuklanmoqda...</div>;
+    return <div className="p-4 sm:p-6 text-white">Yuklanmoqda...</div>;
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">{error}</div>;
+    return <div className="p-4 sm:p-6 text-red-500">{error}</div>;
   }
 
   if (questionIds.length === 0 || questions.length === 0) {
     return (
-      <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold mb-4">Blok Test</h1>
+      <div className="p-4 sm:p-6 text-white">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">Blok Test</h1>
         <p>No questions available. Please select questions.</p>
       </div>
     );
@@ -190,9 +177,9 @@ const BlockTest = () => {
     : '/avtotest.jpg';
 
   return (
-    <div className="p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex px-2 py-1">
+    <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
+        <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questionIds.map((_, index) => {
             const questionId = questions[index]?.question?.id;
             const isAnswered = !!answeredQuestions[questionId];
@@ -210,7 +197,7 @@ const BlockTest = () => {
               <button
                 key={index}
                 onClick={() => handleQuestionChange(index)}
-                className={`mx-[0.05rem] w-12 h-12 flex items-center justify-center ${buttonColorClass}`}
+                className={`w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base`}
               >
                 {index + 1}
               </button>
@@ -219,7 +206,7 @@ const BlockTest = () => {
         </div>
         <button
           onClick={handleFinish}
-          className="ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-3 sm:px-4 py-1 sm:py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base"
         >
           {selectedLanguage === "UZ"
             ? "Tugatish"
@@ -227,19 +214,17 @@ const BlockTest = () => {
             ? "Ayaqtaý"
             : selectedLanguage === "УЗ"
             ? "Тугатиш"
-            : selectedLanguage === "RU"
-            ? "Закончить"
-            : ""}
+            : "Закончить"}
         </button>
       </div>
 
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      <div className="flex justify-between flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
-          <div className="space-y-4">
+          <div className="space-y-2 sm:space-y-4">
             {answers.map((answer, idx) => {
-              const label = `F${idx + 1}`; // Change label to F1, F2, F3, ...
+              const label = `F${idx + 1}`;
               const answerText = selectedLanguage === 'UZ'
                 ? answer.LanUz
                 : selectedLanguage === 'УЗ'
@@ -250,8 +235,8 @@ const BlockTest = () => {
 
               const isSelected = selectedAnswers[currentQuestion.question.id] === answer.id;
               const isAnswered = !!answeredQuestions[currentQuestion.question.id];
-              const isAnswerCorrect = answer.is_correct; // Whether this specific answer is correct
-              const isUserAnswerCorrect = answerCorrectness[currentQuestion.question.id]; // Whether the user's selected answer is correct
+              const isAnswerCorrect = answer.is_correct;
+              const isUserAnswerCorrect = answerCorrectness[currentQuestion.question.id];
 
               return (
                 <JavobBlockTest
@@ -269,7 +254,7 @@ const BlockTest = () => {
           </div>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 mt-4 sm:mt-0">
           <img
             src={imageUrl}
             alt="Question Image"

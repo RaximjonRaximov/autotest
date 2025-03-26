@@ -1,24 +1,21 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext'; // Import the language context
+import { useLanguage } from '../../context/LanguageContext';
 
 const Imtihon2050natija = () => {
-  const { state } = useLocation(); // Get the state passed from Imtihon2050
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const { selectedLanguage } = useLanguage(); // Get the selected language from context
+  const { selectedLanguage } = useLanguage();
 
-  // Extract data from state
   const { correct, incorrect, questionIds, answerCorrectness, timeTaken } = state || {};
   const totalQuestions = questionIds?.length || 0;
-  const passingThreshold = 0.9; // 90% correct to pass
+  const passingThreshold = 0.9;
   const passed = correct >= totalQuestions * passingThreshold;
 
-  // Format the time taken (in seconds) to MM:SS
   const minutes = Math.floor(timeTaken / 60);
   const seconds = (timeTaken % 60).toString().padStart(2, '0');
   const formattedTimeTaken = `${minutes}:${seconds}`;
 
-  // Language-specific text
   const titleText = {
     UZ: "Test javoblari",
     УЗ: "Тест жавоблари",
@@ -54,16 +51,14 @@ const Imtihon2050natija = () => {
     RU: "Выход",
   };
 
-  // Handle exit button
   const handleExit = () => {
     navigate('/user');
   };
 
   return (
-    <div className="p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover flex flex-col items-center">
-      {/* Navigation Buttons and Time Taken */}
-      <div className="flex justify-between items-center mb-6 w-full max-w-4xl">
-        <div className="flex px-2 py-1">
+    <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover flex flex-col items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 w-full max-w-full sm:max-w-4xl">
+        <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questionIds?.map((_, index) => {
             const questionId = state.questions[index]?.question?.id;
             const isCorrect = answerCorrectness[questionId];
@@ -74,40 +69,38 @@ const Imtihon2050natija = () => {
             return (
               <button
                 key={index}
-                className={`mx-[0.05rem] w-12 h-12 flex items-center justify-center ${buttonColorClass}`}
-                disabled // Disable buttons since this is the result page
+                className={`w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center ${buttonColorClass} text-sm sm:text-base`}
+                disabled
               >
                 {index + 1}
               </button>
             );
           })}
         </div>
-        <div className="absolute right-[8rem] top-[6rem] bg-green-700 text-white rounded-full w-18 h-17 flex items-center justify-center border-2 border-green-500">
+        <div className="mt-2 sm:mt-0 sm:absolute sm:right-8 sm:top-6 bg-green-700 text-white rounded-full w-16 sm:w-18 h-16 sm:h-17 flex items-center justify-center border-2 border-green-500 text-sm sm:text-base">
           {formattedTimeTaken}
         </div>
       </div>
 
-      {/* Title */}
-      <h1 className="text-2xl font-bold mb-4">{titleText[selectedLanguage]}</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
+        {titleText[selectedLanguage]}
+      </h1>
 
-      {/* Test Result */}
-      <p className="text-xl mb-4">
+      <p className="text-lg sm:text-xl mb-2 sm:mb-4">
         {resultText[selectedLanguage]}: {correct}/{totalQuestions}
       </p>
 
-      {/* Pass/Fail Message */}
       <p
-        className={`text-lg mb-6 ${
+        className={`text-base sm:text-lg mb-4 sm:mb-6 ${
           passed ? 'text-green-500' : 'text-red-500'
         }`}
       >
         {passed ? passMessage[selectedLanguage] : failMessage[selectedLanguage]}
       </p>
 
-      {/* Exit Button */}
       <button
         onClick={handleExit}
-        className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200"
+        className="px-3 sm:px-4 py-1 sm:py-2 bg-white text-black rounded-lg hover:bg-gray-200 text-sm sm:text-base"
       >
         {exitButtonText[selectedLanguage]}
       </button>
