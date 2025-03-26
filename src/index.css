@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  --breakpoint-phone: 39.9375rem; /* 639px */
+}
+
+@media (max-width: theme("breakpoints.phone")) {
+  [class*="phone:"] {
+    --tw-apply: initial;
+  }
+}
