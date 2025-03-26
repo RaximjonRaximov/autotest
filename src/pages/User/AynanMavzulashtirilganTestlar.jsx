@@ -43,7 +43,12 @@ function AynanMavzulashtirilganTestlar() {
 
   useEffect(() => {
     const getCurrentQuestion = async () => {
-      if (!questions.length || currentPage < 1 || currentPage > questions.length) return;
+      if (
+        !questions.length ||
+        currentPage < 1 ||
+        currentPage > questions.length
+      )
+        return;
       const questionId = questions[currentPage - 1]?.id;
       if (!questionId) {
         setError("Question ID is missing.");
@@ -83,10 +88,14 @@ function AynanMavzulashtirilganTestlar() {
 
   const getQuestionText = () => {
     switch (selectedLanguage) {
-      case "RU": return currentQuestion.question?.LanRu || "Вопрос отсутствует";
-      case "KK": return currentQuestion.question?.LanKarakalpak || "Savol mavjud emas";
-      case "УЗ": return currentQuestion.question?.LanKrill || "Савол мавжуд эмас";
-      default: return currentQuestion.question?.LanUz || "Savol mavjud emas";
+      case "RU":
+        return currentQuestion.question?.LanRu || "Вопрос отсутствует";
+      case "KK":
+        return currentQuestion.question?.LanKarakalpak || "Savol mavjud emas";
+      case "УЗ":
+        return currentQuestion.question?.LanKrill || "Савол мавжуд эмас";
+      default:
+        return currentQuestion.question?.LanUz || "Savol mavjud emas";
     }
   };
 
@@ -130,10 +139,14 @@ function AynanMavzulashtirilganTestlar() {
 
   const getAnswerText = (answer) => {
     switch (selectedLanguage) {
-      case "RU": return answer.LanRu || "Ответ отсутствует";
-      case "KK": return answer.LanKarakalpak || "Javob mavjud emas";
-      case "УЗ": return answer.LanKrill || "Жавоб мавжуд эмас";
-      default: return answer.LanUz || "Javob mavjud emas";
+      case "RU":
+        return answer.LanRu || "Ответ отсутствует";
+      case "KK":
+        return answer.LanKarakalpak || "Javob mavjud emas";
+      case "УЗ":
+        return answer.LanKrill || "Жавоб мавжуд эмас";
+      default:
+        return answer.LanUz || "Javob mavjud emas";
     }
   };
 
@@ -162,7 +175,8 @@ function AynanMavzulashtirilganTestlar() {
 
   const calculateResults = () => {
     const totalQuestions = questions.length;
-    const percentage = totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0;
+    const percentage =
+      totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0;
     let outcome = "";
     if (percentage >= 80) outcome = "YAXSHI";
     else if (percentage >= 50) outcome = "QONIQARLI";
@@ -179,15 +193,54 @@ function AynanMavzulashtirilganTestlar() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-white">
         <div className="text-3xl font-bold mb-4">
-          Test javoblari: {correctCount}/{questions.length}
+          {selectedLanguage === "UZ"
+            ? "Test javoblari"
+            : selectedLanguage === "KK"
+            ? "Test jawapları"
+            : selectedLanguage === "УЗ"
+            ? "Тест жавоблари"
+            : selectedLanguage === "RU"
+            ? "Ответы теста"
+            : ""}{" "}
+          {correctCount}/{questions.length}
         </div>
-        <div className="text-2xl mb-4">Sizning ozlashtirishingiz: {percentage}%</div>
-        <div className="text-2xl mb-8">Test natijasi: {outcome}</div>
+        <div className="text-2xl mb-4">
+          {selectedLanguage === "UZ"
+            ? "Sizning o'zlashtirishingiz"
+            : selectedLanguage === "KK"
+            ? "Sizdiń úylestiriwińiz"
+            : selectedLanguage === "УЗ"
+            ? "Сизнинг ўзлаштиришингиз"
+            : selectedLanguage === "RU"
+            ? "Ваше усвоение"
+            : ""}{" "}
+          {percentage}%
+        </div>
+        <div className="text-2xl mb-8">
+          {selectedLanguage === "UZ"
+            ? "Test natijasi"
+            : selectedLanguage === "KK"
+            ? "Test nátijesi"
+            : selectedLanguage === "УЗ"
+            ? "Тест натижаси"
+            : selectedLanguage === "RU"
+            ? "Результат теста"
+            : ""}{" "}
+          {outcome}
+        </div>
         <button
           onClick={handleExit}
           className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
         >
-          Chiqish
+          {selectedLanguage === "UZ"
+            ? "Chiqish"
+            : selectedLanguage === "KK"
+            ? "Shyǵý"
+            : selectedLanguage === "УЗ"
+            ? "Чиқиш"
+            : selectedLanguage === "RU"
+            ? "Выход"
+            : ""}
         </button>
       </div>
     );
@@ -206,7 +259,11 @@ function AynanMavzulashtirilganTestlar() {
         renderResultsPage()
       ) : (
         <>
-          <div className={`flex ${testStarted ? "justify-between" : "justify-end"}`}>
+          <div
+            className={`flex ${
+              testStarted ? "justify-between" : "justify-end"
+            }`}
+          >
             {testStarted && !error && questions.length > 0 && (
               <div className="flex justify-center mb-4 space-x-2">
                 {questions.map((_, index) => {
@@ -215,7 +272,9 @@ function AynanMavzulashtirilganTestlar() {
                   const userAnswer = answers[questionId];
                   let bgColor = "bg-white text-black";
                   if (userAnswer) {
-                    bgColor = userAnswer.is_correct ? "bg-green-500 text-white" : "bg-red-500 text-white";
+                    bgColor = userAnswer.is_correct
+                      ? "bg-green-500 text-white"
+                      : "bg-red-500 text-white";
                   }
                   return (
                     <button
@@ -237,16 +296,39 @@ function AynanMavzulashtirilganTestlar() {
                 className={`px-12 py-1 text-white font-regular rounded-lg text-[22px] bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
                      shadow-[0px_0px_30px_0px_#FF7F5080] transition-all duration-300 hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105`}
               >
-                {testStarted ? "Tugatish" : "Test"}
+                {testStarted
+                  ? selectedLanguage === "UZ"
+                    ? "Tugatish"
+                    : selectedLanguage === "KK"
+                    ? "Ayaqtaý"
+                    : selectedLanguage === "УЗ"
+                    ? "Тугатиш"
+                    : selectedLanguage === "RU"
+                    ? "Закончить"
+                    : ""
+                  : selectedLanguage === "UZ"
+                  ? "Test"
+                  : selectedLanguage === "KK"
+                  ? "Test"
+                  : selectedLanguage === "УЗ"
+                  ? "Тест"
+                  : selectedLanguage === "RU"
+                  ? "Тест"
+                  : ""}
               </button>
             </div>
           </div>
 
-          {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+          {error && (
+            <div className="text-red-500 text-center mb-4">{error}</div>
+          )}
 
           {!error && questions.length > 0 && (
             <>
-              <Savol text={getQuestionText()} timeLeft={testStarted ? timeLeft : null} />
+              <Savol
+                text={getQuestionText()}
+                timeLeft={testStarted ? timeLeft : null}
+              />
               <div className="flex space-x-4">
                 <div className="space-y-4 flex-1">
                   {currentQuestion.answers?.map((answer, index) => {
@@ -293,7 +375,9 @@ function AynanMavzulashtirilganTestlar() {
                 </span>
                 <button
                   onClick={handleNext}
-                  disabled={currentPage === questions.length || questions.length === 0}
+                  disabled={
+                    currentPage === questions.length || questions.length === 0
+                  }
                   className={`px-4 py-2 bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-2xl ${
                     currentPage === questions.length || questions.length === 0
                       ? "opacity-50 cursor-not-allowed"
@@ -307,7 +391,9 @@ function AynanMavzulashtirilganTestlar() {
           )}
 
           {!error && questions.length === 0 && (
-            <div className="text-white text-center mt-10">Loading questions...</div>
+            <div className="text-white text-center mt-10">
+              Loading questions...
+            </div>
           )}
         </>
       )}
