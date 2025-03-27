@@ -76,6 +76,7 @@ const UserMain = () => {
         throw new Error("API response does not contain a valid question_ids array");
       }
       dispatch(cartActions.addTest(testIds));
+      dispatch(cartActions.setTestTuri(count)); // testTuri ni o'rnatamiz (20 yoki 50)
       navigate(redirectPath);
     } catch (err) {
       setError("Savollarni yuklashda xato yuz berdi");
