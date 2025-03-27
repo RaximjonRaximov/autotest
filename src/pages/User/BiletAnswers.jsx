@@ -63,33 +63,23 @@ function BiletAnswers() {
   const getQuestionText = (question) => {
     if (!question?.question) return "Savol mavjud emas";
     switch (selectedLanguage) {
-      case "RU":
-        return question.question.LanRu || "Вопрос отсутствует";
-      case "KK":
-        return question.question.LanKarakalpak || "Savol mavjud emas";
-      case "УЗ":
-        return question.question.LanKrill || "Савол мавжуд эмас";
-      default:
-        return question.question.LanUz || "Savol mavjud emas";
+      case "RU": return question.question.LanRu || "Вопрос отсутствует";
+      case "KK": return question.question.LanKarakalpak || "Savol mavjud emas";
+      case "УЗ": return question.question.LanKrill || "Савол мавжуд эмас";
+      default: return question.question.LanUz || "Savol mavjud emas";
     }
   };
 
   const getAnswerText = (answer) => {
     switch (selectedLanguage) {
-      case "RU":
-        return answer.LanRu || "Ответ отсутствует";
-      case "KK":
-        return answer.LanKarakalpak || "Javob mavjud emas";
-      case "УЗ":
-        return answer.LanKrill || "Жавоб мавжуд эмас";
-      default:
-        return answer.LanUz || "Javob mavjud emas";
+      case "RU": return answer.LanRu || "Ответ отсутствует";
+      case "KK": return answer.LanKarakalpak || "Javob mavjud emas";
+      case "УЗ": return answer.LanKrill || "Жавоб мавжуд эмас";
+      default: return answer.LanUz || "Javob mavjud emas";
     }
   };
 
-  const getLabel = (index) => {
-    return `F${index + 1}`;
-  };
+  const getLabel = (index) => `F${index + 1}`;
 
   const handleExit = () => {
     navigate("/user/imtihon-biletlar-javoblar", { replace: true });
@@ -101,6 +91,10 @@ function BiletAnswers() {
 
   const handleNext = () => {
     setCurrentQuestionIndex((prev) => Math.min(prev + 1, questions.length - 1));
+  };
+
+  const handleQuestionClick = (index) => {
+    setCurrentQuestionIndex(index);
   };
 
   if (loading) {
@@ -122,6 +116,105 @@ function BiletAnswers() {
   const currentQuestion = questions[currentQuestionIndex];
   const imageUrl = currentQuestion?.question?.Image || "/avtotest.jpg";
 
+  // Full Grid Pagination (Desktop)
+  const FullGridPagination = () => (
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
+      <div className="flex flex-wrap gap-2 px-2 py-1">
+        {questions.map((_, index) => {
+          const buttonColorClass =
+            currentQuestionIndex === index
+              ? "bg-blue-500 text-white border border-blue-500"
+              : "bg-white text-black border border-gray-300";
+          return (
+            <button
+              key={index}
+              onClick={() => handleQuestionClick(index)}
+              className={`sm:w-10 sm:h-10 w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+      </div>
+      <button
+        onClick={handleExit}
+        className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base transition-colors duration-200"
+      >
+        {selectedLanguage === "UZ"
+          ? "Chiqish"
+          : selectedLanguage === "KK"
+          ? "Shyǵý"
+          : selectedLanguage === "УЗ"
+          ? "Чиқиш"
+          : "Выход"}
+      </button>
+    </div>
+  );
+
+  // Simple Pagination with Previous/Next (Mobile)
+  const SimplePagination = () => (
+    <div className="flex flex-col space-y-2 mb-4">
+      <div className="flex justify-between items-center">
+        <button
+          onClick={handlePrevious}
+          disabled={currentQuestionIndex === 0}
+          className={`w-10 h-10 flex items-center justify-center bg-white text-black border border-gray-300 rounded-md text-xl ${
+            currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"
+          } transition-colors duration-200`}
+        >
+          {"<<"}
+        </button>
+        <span className="w-16 h-10 flex items-center justify-center bg-gray-800 text-white rounded-md text-xl">
+          {currentQuestionIndex + 1}/{questions.length}
+        </span>
+        <button
+          onClick={handleNext}
+          disabled={currentQuestionIndex === questions.length - 1}
+          className={`w-10 h-10 flex items-center justify-center bg-white text-black border border-gray-300 rounded-md text-xl ${
+            currentQuestionIndex === questions.length - 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"
+          } transition-colors duration-200`}
+        >
+          {">>"}
+        </button>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={handleExit}
+          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm transition-colors duration-200"
+        >
+          {selectedLanguage === "UZ"
+            ? "Chiqish"
+            : selectedLanguage === "KK"
+            ? "Shyǵý"
+            : selectedLanguage === "УЗ"
+            ? "Чиқиш"
+            : "Выход"}
+        </button>
+      </div>
+    </div>
+  );
+
+  // Bottom Grid Pagination (Mobile)
+  const BottomGridPagination = () => (
+    <div className="flex flex-wrap gap-2 px-2 py-1 mt-4">
+      {questions.map((_, index) => {
+        const buttonColorClass =
+          currentQuestionIndex === index
+            ? "bg-blue-500 text-white border border-blue-500"
+            : "bg-white text-black border border-gray-300";
+        return (
+          <button
+            key={index}
+            onClick={() => handleQuestionClick(index)}
+            className={`w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
+          >
+            {index + 1}
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div
       className="min-h-screen p-4 sm:p-6"
@@ -133,52 +226,8 @@ function BiletAnswers() {
     >
       {/* Mobile Layout */}
       <div className="sm:hidden flex flex-col space-y-4">
-        {/* Header: Previous/Next Buttons */}
-        <div className="flex justify-between items-center mb-4">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className={`px-3 py-1 bg-white text-black border border-gray-300 rounded-md text-xl
-              ${currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {"<<"}
-          </button>
-          <span className="px-3 py-1 bg-gray-800 text-white rounded-md text-xl">
-            {currentQuestionIndex + 1}/{questions.length}
-          </span>
-          <button
-            onClick={handleNext}
-            disabled={currentQuestionIndex === questions.length - 1}
-            className={`px-3 py-1 bg-white text-black border border-gray-300 rounded-md text-xl
-              ${currentQuestionIndex === questions.length - 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {">>"}
-          </button>
-        </div>
-
-        {/* Chiqish Button (below Previous/Next, left-aligned) */}
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={handleExit}
-            className="px-6 py-1 text-white font-regular rounded-lg text-lg 
-                      bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
-                      shadow-[0px_0px_20px_0px_#FF7F5080] transition-all duration-300 
-                      hover:shadow-[0px_0px_30px_0px_#FF7F5080] hover:scale-105"
-          >
-            {selectedLanguage === "UZ"
-              ? "Chiqish"
-              : selectedLanguage === "KK"
-              ? "Shyǵý"
-              : selectedLanguage === "УЗ"
-              ? "Чиқиш"
-              : "Выход"}
-          </button>
-        </div>
-
-        {/* Question */}
+        <SimplePagination />
         <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
-
-        {/* Image */}
         <div className="flex-1 rounded-lg">
           <img
             src={imageUrl}
@@ -186,8 +235,6 @@ function BiletAnswers() {
             className="w-full object-cover rounded-lg"
           />
         </div>
-
-        {/* Answers */}
         <div className="space-y-2">
           {currentQuestion.answers?.map((answer, index) => (
             <Javob
@@ -200,29 +247,12 @@ function BiletAnswers() {
             />
           ))}
         </div>
+        <BottomGridPagination />
       </div>
 
-      {/* Desktop Layout (original unchanged) */}
+      {/* Desktop Layout */}
       <div className="hidden sm:block">
-        <div className="flex justify-end items-center mb-4 sm:mb-[33px]">
-          <button
-            onClick={handleExit}
-            className="px-6 sm:px-12 py-1 text-white font-regular rounded-lg text-lg sm:text-[22px] 
-                      bg-[conic-gradient(from_-3.29deg_at_100%_-13%,#FFA502_0deg,#FF6348_360deg)] 
-                      shadow-[0px_0px_20px_0px_#FF7F5080] sm:shadow-[0px_0px_30px_0px_#FF7F5080] 
-                      transition-all duration-300 hover:shadow-[0px_0px_30px_0px_#FF7F5080] 
-                      sm:hover:shadow-[0px_0px_40px_0px_#FF7F5080] hover:scale-105"
-          >
-            {selectedLanguage === "UZ"
-              ? "Chiqish"
-              : selectedLanguage === "KK"
-              ? "Shyǵý"
-              : selectedLanguage === "УЗ"
-              ? "Чиқиш"
-              : "Выход"}
-          </button>
-        </div>
-
+        <FullGridPagination />
         <Savol text={getQuestionText(currentQuestion)} timeLeft={null} />
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="space-y-2 sm:space-y-4 flex-1">
@@ -241,30 +271,9 @@ function BiletAnswers() {
             <img
               src={imageUrl}
               alt="Question Image"
-              className="w-full sm:w-[350px] object-cover rounded-lg sm:rounded-[12px]"
+              className="w-full object-cover rounded-lg sm:rounded-[12px]"
             />
           </div>
-        </div>
-        <div className="flex justify-center items-center mt-4 sm:mt-6 space-x-4 pagination">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl
-              ${currentQuestionIndex === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {"<<"}
-          </button>
-          <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
-            {currentQuestionIndex + 1}/{questions.length}
-          </span>
-          <button
-            onClick={handleNext}
-            disabled={currentQuestionIndex === questions.length - 1}
-            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md text-xl sm:text-2xl
-              ${currentQuestionIndex === questions.length - 1 ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {">>"}
-          </button>
         </div>
       </div>
     </div>

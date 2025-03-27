@@ -98,6 +98,10 @@ function AynanMavzulashtirilganTestlar() {
     }, 1000);
   };
 
+  const imageUrl = currentQuestion?.question?.Image
+    ? `${currentQuestion.question?.Image}`
+    : "/avtotest.jpg";
+
   const handleQuestionClick = (page) => setCurrentPage(page);
 
   const handlePrevious = () => {
@@ -328,8 +332,8 @@ function AynanMavzulashtirilganTestlar() {
               </div>
               <div className="flex-1 rounded-lg sm:rounded-[12px]">
                 <img
-                  src={currentQuestion.question?.Image}
-                  alt="Question Image"
+                  src={imageUrl}
+                  alt="/avtotest.jpg"
                   className="w-full object-cover rounded-lg sm:rounded-[12px]"
                 />
               </div>
