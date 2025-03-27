@@ -197,7 +197,7 @@ const BiletTest = () => {
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
       {/* Pagination and Finish Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
-        <div className="grid grid-cols-10 gap-3 sm:gap-2 px-2 py-1">
+        <div className="flex flex-wrap gap-1 sm:gap-1 px-2 py-1">
           {questions.map((_, index) => {
             const questionId = questions[index]?.question?.id;
             const isAnswered = !!answeredQuestions[questionId];

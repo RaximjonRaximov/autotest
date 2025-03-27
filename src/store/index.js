@@ -6,10 +6,10 @@ const loadStateFromSessionStorage = () => {
     const serializedState = sessionStorage.getItem("cartState");
     return serializedState
       ? JSON.parse(serializedState)
-      : { test: [], categoryId: null, role_id: null }; // role_id qo'shildi
+      : { test: [], categoryId: null, role_id: null, testTuri: null }; // testTuri qo'shildi
   } catch (err) {
     console.error("Error loading state:", err);
-    return { test: [], categoryId: null, role_id: null };
+    return { test: [], categoryId: null, role_id: null, testTuri: null };
   }
 };
 
@@ -42,7 +42,10 @@ const cartSlice = createSlice({
       state.userId = action.payload;
     },
     setRole_id: (state, action) => {
-      state.role_id = action.payload; // role_id ga qiymat beramiz
+      state.role_id = action.payload;
+    },
+    setTestTuri: (state, action) => {
+      state.testTuri = action.payload; // testTuri uchun reducer
     },
   },
 });
