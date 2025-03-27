@@ -17,7 +17,10 @@ const ImtihonBiletlarJavoblari = () => {
   const userId = user ? user.user_id : null;
 
   // Debug the selectedLanguage value
-  console.log("Selected Language in ImtihonBiletlarJavoblari:", selectedLanguage);
+  console.log(
+    "Selected Language in ImtihonBiletlarJavoblari:",
+    selectedLanguage
+  );
 
   // Define translations for static text
   const titleText = {
@@ -54,10 +57,17 @@ const ImtihonBiletlarJavoblari = () => {
     dispatch(cartActions.setCurrentBiletId(id));
   };
 
+  const handleGoBack = () => {
+    navigate(-1); // Navigates back one step in the browser history
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) {
-        setError(errorMessages.userNotFound[selectedLanguage] || errorMessages.userNotFound.UZ);
+        setError(
+          errorMessages.userNotFound[selectedLanguage] ||
+            errorMessages.userNotFound.UZ
+        );
         setLoading(false);
         return;
       }
@@ -73,7 +83,8 @@ const ImtihonBiletlarJavoblari = () => {
       } catch (err) {
         setError(
           err.response?.data?.message ||
-          (errorMessages.unknownError[selectedLanguage] || errorMessages.unknownError.UZ)
+            errorMessages.unknownError[selectedLanguage] ||
+            errorMessages.unknownError.UZ
         );
         setLoading(false);
       }
@@ -96,10 +107,14 @@ const ImtihonBiletlarJavoblari = () => {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <p className="text-base sm:text-lg text-red-600">
-          {selectedLanguage === "UZ" ? "Xato" : 
-           selectedLanguage === "УЗ" ? "Хато" : 
-           selectedLanguage === "KK" ? "Qate" : 
-           "Ошибка"}: {error}
+          {selectedLanguage === "UZ"
+            ? "Xato"
+            : selectedLanguage === "УЗ"
+            ? "Хато"
+            : selectedLanguage === "KK"
+            ? "Qate"
+            : "Ошибка"}
+          : {error}
         </p>
       </div>
     );
@@ -120,9 +135,20 @@ const ImtihonBiletlarJavoblari = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 sm:py-8">
-      <h1 className="text-xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-8">
-        {titleText[selectedLanguage] || titleText.UZ}
-      </h1>
+      <div className="w-full sm:max-w-4xl px-4 sm:px-0 flex items-center justify-between mb-4 sm:mb-8">
+        <button onClick={handleGoBack}>
+          <img
+            src="/public/back.png"
+            alt=""
+            className="w-7 h-7"
+          />
+        </button>
+        <h1 className="text-xl sm:text-3xl font-bold text-gray-800 text-center flex-1">
+          {titleText[selectedLanguage] || titleText.UZ}
+        </h1>
+        {/* Empty div to balance the flex layout */}
+        <div className="w-[50px] sm:w-[60px]"></div>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-4 w-full sm:max-w-4xl px-4 sm:px-0">
         {tables.map((table) => (

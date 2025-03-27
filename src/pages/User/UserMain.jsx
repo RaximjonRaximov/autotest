@@ -195,7 +195,7 @@ const UserMain = () => {
                   <div className="flex flex-col items-center space-y-2">
                     <Link
                       to="/user/imtihon-biletlar"
-                      className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem]"
+                      className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem] whitespace-nowrap"
                     >
                       {selectedLanguage === "UZ"
                         ? "Test"
@@ -207,7 +207,7 @@ const UserMain = () => {
                     </Link>
                     <Link
                       to="/user/imtihon-biletlar-javoblar"
-                      className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
+                      className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full whitespace-nowrap"
                     >
                       {selectedLanguage === "UZ"
                         ? "Test javoblari"
@@ -252,10 +252,10 @@ const UserMain = () => {
                     >
                       ✕
                     </button>
-                    <div className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col w-[140px] space-y-2">
                       <Link
                         to="/user/imtihon-biletlar"
-                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem]"
+                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem] whitespace-nowrap"
                       >
                         {selectedLanguage === "UZ"
                           ? "Test"
@@ -267,7 +267,7 @@ const UserMain = () => {
                       </Link>
                       <Link
                         to="/user/imtihon-biletlar-javoblar"
-                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
+                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full whitespace-nowrap"
                       >
                         {selectedLanguage === "UZ"
                           ? "Test javoblari"
