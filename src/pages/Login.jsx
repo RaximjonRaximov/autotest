@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    window.location.href = "https://django-avtotest.onrender.com/admin/";
+    window.location.href = "https://test.premieravtotest.uz/admin/";
   };
 
   const handleSubmit = async (e) => {

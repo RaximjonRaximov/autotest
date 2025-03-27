@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://django-avtotest.onrender.com/api",
+  baseURL: "https://test.premieravtotest.uz/api",
 });
 
 api.interceptors.request.use(

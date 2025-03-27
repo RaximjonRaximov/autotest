@@ -173,7 +173,7 @@ const BlockTest = () => {
 
   const answers = currentQuestion?.answers || [];
   const imageUrl = currentQuestion?.question?.Image
-    ? `https://django-avtotest.onrender.com${currentQuestion.question.Image}`
+    ? `${currentQuestion.question.Image}`
     : '/avtotest.jpg';
 
   return (
