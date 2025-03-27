@@ -125,12 +125,12 @@ const ImtihonBiletlarJavoblari = () => {
     // Assuming the API returns table names in multiple languages
     // Adjust these field names based on your actual API response
     return selectedLanguage === "UZ"
-      ? table.nameUz || table.name
+      ? table.name || table.name
       : selectedLanguage === "УЗ"
-      ? table.nameKrill || table.name
+      ? table.nameLanKrill || table.name
       : selectedLanguage === "KK"
-      ? table.nameKarakalpak || table.name
-      : table.nameRu || table.name;
+      ? table.nameLanKarakalpak || table.name
+      : table.nameLanRu || table.name;
   };
 
   return (

@@ -17,10 +17,8 @@ const ImtihonBiletlar = () => {
   const { selectedLanguage } = useLanguage();
   const userId = user ? user.user_id : null;
 
-  // Debug the selectedLanguage value
   console.log("Selected Language in ImtihonBiletlar:", selectedLanguage);
 
-  // Define translations for static text
   const titleText = {
     UZ: "Imtihon biletlari",
     УЗ: "Имтиҳон билетлари",
@@ -51,59 +49,72 @@ const ImtihonBiletlar = () => {
   };
 
   const handleBilet = (id) => {
-    navigate("/user/bilet-test", { replace: true });
     dispatch(cartActions.setCurrentBiletId(id));
+    navigate("/user/bilet-test", { replace: true });
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Navigates back one step in the browser history
+    navigate(-1);
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       if (!userId) {
-        setError(
-          errorMessages.userNotFound[selectedLanguage] ||
-            errorMessages.userNotFound.UZ
-        );
-        setLoading(false);
+        if (isMounted) {
+          setError(
+            errorMessages.userNotFound[selectedLanguage] ||
+              errorMessages.userNotFound.UZ
+          );
+          setLoading(false);
+        }
         return;
       }
 
       try {
-        const tablesResponse = await api.get("/tables/");
+        const tablesResponse = await api.get("/tables/");//1
         const sortedTables = Array.isArray(tablesResponse.data.tables)
           ? tablesResponse.data.tables.sort((a, b) => a.id - b.id)
           : [];
 
-        const resultsResponse = await api.get(`/user-correct/${userId}/`);
-        const results = Array.isArray(resultsResponse.data)
-          ? resultsResponse.data
-          : [];
-        setUserResults(results);
-
-        const tablesWithResults = sortedTables.map((table) => {
-          const result = results.find((r) => r.table === table.id);
-          return {
-            ...table,
-            correct: result ? result.correct : 0,
-            incorrect: result ? result.incorrect : 0,
-          };
+        const resultsResponse = await api.get(`/user-correct/${userId}/`).catch((err) => {//2
+          if (err.response?.status === 404) return { data: [] }; // Handle 404 gracefully
+          throw err;
         });
+        const results = Array.isArray(resultsResponse.data) ? resultsResponse.data : [];
+        console.log("User Correct Response:", resultsResponse.data); // Debug
 
-        setTables(tablesWithResults);
-        setLoading(false);
+        if (isMounted) {
+          setUserResults(results);
+          const tablesWithResults = sortedTables.map((table) => {
+            const result = results.find((r) => r.table === table.id);
+            return {
+              ...table,
+              correct: result ? result.correct : 0,
+              incorrect: result ? result.incorrect : 0,
+            };
+          });
+          setTables(tablesWithResults);
+          setLoading(false);
+        }
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            errorMessages.unknownError[selectedLanguage] ||
-            errorMessages.unknownError.UZ
-        );
-        setLoading(false);
+        if (isMounted) {
+          setError(
+            err.response?.data?.message ||
+              errorMessages.unknownError[selectedLanguage] ||
+              errorMessages.unknownError.UZ
+          );
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [userId, selectedLanguage]);
 
   if (loading) {
@@ -126,40 +137,31 @@ const ImtihonBiletlar = () => {
             ? "Хато"
             : selectedLanguage === "KK"
             ? "Qate"
-            : "Ошибка"}
-          : {error}
+            : "Ошибка"}: {error}
         </p>
       </div>
     );
   }
 
-  // Function to get the table name based on the selected language
   const getTableName = (table) => {
-    // Assuming the API returns table names in multiple languages
-    // Adjust these field names based on your actual API response
     return selectedLanguage === "UZ"
-      ? table.nameUz || table.name
+      ? table.name || table.name
       : selectedLanguage === "УЗ"
-      ? table.nameKrill || table.name
+      ? table.nameLanKrill || table.name
       : selectedLanguage === "KK"
-      ? table.nameKarakalpak || table.name
-      : table.nameRu || table.name;
+      ? table.nameLanKarakalpak || table.name
+      : table.nameLanRu || table.name;
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 sm:py-8">
       <div className="w-full sm:max-w-4xl px-4 sm:px-0 flex items-center justify-between mb-4 sm:mb-8">
         <button onClick={handleGoBack}>
-          <img
-            src="/public/back.png"
-            alt=""
-            className="w-7 h-7"
-          />
+          <img src="/public/back.png" alt="" className="w-7 h-7" />
         </button>
         <h1 className="text-xl sm:text-3xl font-bold text-gray-800 text-center flex-1">
           {titleText[selectedLanguage] || titleText.UZ}
         </h1>
-        {/* Empty div to balance the flex layout */}
         <div className="w-[50px] sm:w-[60px]"></div>
       </div>
 
@@ -168,7 +170,8 @@ const ImtihonBiletlar = () => {
           <button
             key={table.id}
             onClick={() => handleBilet(table.id)}
-            className="flex flex-col items-center justify-center py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition duration-300 hover:opacity-90 bg-gradient-to-b from-[#B4DFEF] to-[#38BEEF] text-black font-semibold text-sm sm:text-base"
+            disabled={loading}
+            className="flex flex-col items-center justify-center py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition duration-300 hover:opacity-90 bg-gradient-to-b from-[#B4DFEF] to-[#38BEEF] text-black font-semibold text-sm sm:text-base disabled:opacity-50"
           >
             <span>{getTableName(table)}</span>
             {table.correct !== 0 || table.incorrect !== 0 ? (
