@@ -61,6 +61,8 @@ const ImtihonBiletlar = () => {
     let isMounted = true;
 
     const fetchData = async () => {
+      if (user === null || user === undefined) return; // Wait for user to load
+
       if (!userId) {
         if (isMounted) {
           setError(
@@ -73,17 +75,17 @@ const ImtihonBiletlar = () => {
       }
 
       try {
-        const tablesResponse = await api.get("/tables/");//1
+        const tablesResponse = await api.get("/tables/");
         const sortedTables = Array.isArray(tablesResponse.data.tables)
           ? tablesResponse.data.tables.sort((a, b) => a.id - b.id)
           : [];
 
-        const resultsResponse = await api.get(`/user-correct/${userId}/`).catch((err) => {//2
-          if (err.response?.status === 404) return { data: [] }; // Handle 404 gracefully
+        const resultsResponse = await api.get(`/user-correct/${userId}/`).catch((err) => {
+          if (err.response?.status === 404) return { data: [] };
           throw err;
         });
         const results = Array.isArray(resultsResponse.data) ? resultsResponse.data : [];
-        console.log("User Correct Response:", resultsResponse.data); // Debug
+        console.log("User Correct Response:", resultsResponse.data);
 
         if (isMounted) {
           setUserResults(results);
@@ -115,7 +117,17 @@ const ImtihonBiletlar = () => {
     return () => {
       isMounted = false;
     };
-  }, [userId, selectedLanguage]);
+  }, [user, userId, selectedLanguage]);
+
+  if (user === null || user === undefined) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <p className="text-base sm:text-lg text-gray-600">
+          {loadingText[selectedLanguage] || loadingText.UZ}
+        </p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -157,7 +169,7 @@ const ImtihonBiletlar = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 sm:py-8">
       <div className="w-full sm:max-w-4xl px-4 sm:px-0 flex items-center justify-between mb-4 sm:mb-8">
         <button onClick={handleGoBack}>
-          <img src="/public/back.png" alt="" className="w-7 h-7" />
+          <img src="/back.png" alt="" className="w-7 h-7" />
         </button>
         <h1 className="text-xl sm:text-3xl font-bold text-gray-800 text-center flex-1">
           {titleText[selectedLanguage] || titleText.UZ}
