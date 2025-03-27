@@ -3,6 +3,8 @@ import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Helmet } from "react-helmet";
+
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -63,6 +65,14 @@ const Login = () => {
   };
 
   return (
+    <div>
+      <Helmet>
+        <title>Premier Avtotest - Foydalanuvchi Bosh Sahifasi</title>
+        <meta
+          name="description"
+          content="Foydalanuvchilar uchun mavzulashtirilgan testlar va imtihon biletlariga kirish."
+        />
+      </Helmet>
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(loginBg.png)` }}
@@ -131,6 +141,8 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </div>
+
   );
 };
 
