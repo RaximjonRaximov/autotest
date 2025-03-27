@@ -105,7 +105,7 @@ function AynanMavzulashtirilganTestlar() {
     }));
   
     if (answer.is_correct) {
-      setCorrectCount((prev) => prev + 1); // Fixed the parameter name
+      setCorrectCount((prev) => prev + 1);
     } else {
       setIncorrectCount((prev) => prev + 1);
     }
@@ -115,13 +115,6 @@ function AynanMavzulashtirilganTestlar() {
         setCurrentPage(currentPage + 1);
       }
     }, 1000);
-  };
-  const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < questions.length) setCurrentPage(currentPage + 1);
   };
 
   const handleQuestionClick = (page) => {
@@ -161,10 +154,8 @@ function AynanMavzulashtirilganTestlar() {
     setTestStarted(false);
     setTestEnded(true);
 
-    // Calculate time taken (total time - time left)
     const timeTaken = 1500 - timeLeft;
 
-    // Prepare data for Imtihon2050natija
     const questionIds = questions.map((q) => q.id);
     const answerCorrectness = {};
     questionIds.forEach((id) => {
@@ -178,7 +169,7 @@ function AynanMavzulashtirilganTestlar() {
         questionIds,
         answerCorrectness,
         timeTaken,
-        questions, // Pass questions for compatibility
+        questions,
       },
     });
   };
@@ -197,49 +188,16 @@ function AynanMavzulashtirilganTestlar() {
       }}
     >
       <>
-        {/* Mobile: Previous/Next Navigation at the Top */}
-        <div className="flex justify-between items-center mb-4 md:hidden">
-          <button
-            onClick={handlePrevious}
-            disabled={currentPage === 1}
-            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-xl sm:text-2xl ${
-              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {"<<"}
-          </button>
-          <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
-            {currentPage}/{questions.length}
-          </span>
-          <button
-            onClick={handleNext}
-            disabled={
-              currentPage === questions.length || questions.length === 0
-            }
-            className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-xl sm:text-2xl ${
-              currentPage === questions.length || questions.length === 0
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-          >
-            {">>"}
-          </button>
-        </div>
-
-        {/* Pagination (Question Number Buttons) and Start/Stop Button */}
-        <div
-          className={`flex flex-col sm:flex-row ${
-            testStarted ? "justify-between" : "justify-end"
-          } mb-4 sm:mb-[33px]`}
-        >
-          {testStarted && !error && questions.length > 0 && (
+        {/* Pagination and Start/Stop Button at the Top */}
+        <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-[33px]">
+          {!error && questions.length > 0 && (
             <div className="grid grid-cols-10 gap-1 sm:gap-2 justify-center mb-2 sm:mb-4">
               {questions.map((_, index) => {
                 const page = index + 1;
                 const questionId = questions[index]?.id;
                 const userAnswer = answers[questionId];
-                let bgColor = "bg-white text-black";
-                if (userAnswer) {
+                let bgColor = "bg-white text-black"; // White before test starts
+                if (testStarted && userAnswer) {
                   bgColor = userAnswer.is_correct
                     ? "bg-green-500 text-white"
                     : "bg-red-500 text-white";
@@ -357,39 +315,10 @@ function AynanMavzulashtirilganTestlar() {
                   <img
                     src={currentQuestion.question?.Image}
                     alt="Question Image"
-                    className="w-full sm:w-[350px] object-cover rounded-lg sm:rounded-[12px]"
+                    className="w-full  object-cover rounded-lg sm:rounded-[12px]"
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Desktop: Previous/Next Navigation at the Bottom */}
-            <div className="hidden md:flex justify-center items-center mt-4 sm:mt-6 space-x-4 pagination">
-              <button
-                onClick={handlePrevious}
-                disabled={currentPage === 1}
-                className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-xl sm:text-2xl ${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {"<<"}
-              </button>
-              <span className="px-3 sm:px-4 py-1 sm:py-2 bg-gray-800 text-white rounded-md text-xl sm:text-2xl">
-                {currentPage}/{questions.length}
-              </span>
-              <button
-                onClick={handleNext}
-                disabled={
-                  currentPage === questions.length || questions.length === 0
-                }
-                className={`px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border border-gray-300 rounded-md hover:bg-gray-100 transition-colors text-xl sm:text-2xl ${
-                  currentPage === questions.length || questions.length === 0
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                {">>"}
-              </button>
             </div>
           </>
         )}
