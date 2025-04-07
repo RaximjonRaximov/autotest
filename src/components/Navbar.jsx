@@ -11,9 +11,9 @@ const Navbar = () => {
   const { selectedLanguage, setSelectedLanguage } = useLanguage();
 
   const languages = [
-    { code: "RU", flag: "/ru.png", label: "RU" },
+    // { code: "RU", flag: "/ru.png", label: "RU" },
     { code: "UZ", flag: "/uz.png", label: "UZ" },
-    { code: "KK", flag: "/kk.png", label: "KK" },
+    // { code: "KK", flag: "/kk.png", label: "KK" },
     { code: "УЗ", flag: "/kpj.png", label: "УЗ" },
   ];
 

@@ -37,25 +37,25 @@ const UserMain = () => {
         RU: "Тематические тесты",
         UZ: "Mavzulashitirilgan testlar",
         KK: "Тақырыптық тестер",
-        УЗ: "Тақырыптық тестер",
+        УЗ: "Мавзуларга ажратилган тестлар",
       },
       imtihonBiletlar: {
         RU: "Экзаменационные билеты",
         UZ: "Imtihon Biletlar",
         KK: "Емтихан билеттері",
-        УЗ: "Емтихан билеттері",
+        УЗ: "Имтиҳон билетлари",
       },
       imtihon2050: {
         RU: "Экзамен (20, 50)",
         UZ: "Imtihon(20,50)",
         KK: "Емтихан (20, 50)",
-        УЗ: "Емтихан (20, 50)",
+        УЗ: "Имтиҳон (20, 50)",
       },
       blokTest: {
         RU: "Блочный тест",
         UZ: "Blok test",
         KK: "Блоктық тест",
-        УЗ: "Блоктық тест",
+        УЗ: "Блок тест",
       },
     };
     return translations[key][selectedLanguage] || translations[key]["UZ"];
@@ -73,7 +73,9 @@ const UserMain = () => {
       const response = await api.get(`/random-questions/${count}/`);
       const testIds = response.data.question_ids;
       if (!Array.isArray(testIds)) {
-        throw new Error("API response does not contain a valid question_ids array");
+        throw new Error(
+          "API response does not contain a valid question_ids array"
+        );
       }
       dispatch(cartActions.addTest(testIds));
       dispatch(cartActions.setTestTuri(count)); // testTuri ni o'rnatamiz (20 yoki 50)
@@ -233,7 +235,7 @@ const UserMain = () => {
                 <button
                   ref={buttonRef2}
                   onClick={openModal2}
-                  className="bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
+                  className="cursor-pointer bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
                 >
                   {getButtonText("imtihonBiletlar")}
                 </button>
@@ -248,7 +250,7 @@ const UserMain = () => {
                   >
                     <button
                       onClick={closeModal2}
-                      className="absolute top-1 sm:top-2 right-1 sm:right-2 text-white hover:text-gray-300 text-lg sm:text-xl"
+                      className="cursor-pointer absolute top-1 sm:top-2 right-1 sm:right-2 text-white hover:text-gray-300 text-lg sm:text-xl"
                     >
                       ✕
                     </button>
@@ -285,7 +287,7 @@ const UserMain = () => {
                 <button
                   ref={buttonRef}
                   onClick={openModal}
-                  className="bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
+                  className="cursor-pointer bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
                   disabled={imtihonLoading}
                 >
                   {imtihonLoading
@@ -316,14 +318,14 @@ const UserMain = () => {
                     <div className="flex flex-col items-center space-y-2">
                       <button
                         onClick={() => handleImtihonSelect("20")}
-                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem]"
+                        className="cursor-pointer bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full mb-2 sm:mb-[1.5rem]"
                         disabled={imtihonLoading}
                       >
                         20
                       </button>
                       <button
                         onClick={() => handleImtihonSelect("50")}
-                        className="bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
+                        className="cursor-pointer bg-white text-black px-4 sm:px-6 py-1 rounded-lg hover:bg-gray-200 transition-colors w-full"
                         disabled={imtihonLoading}
                       >
                         50
@@ -334,7 +336,7 @@ const UserMain = () => {
               </div>
               <button
                 onClick={handleBlockTestSelect}
-                className="bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
+                className="cursor-pointer bg-gray-800 text-white text-center py-6 sm:py-10 text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-700 transition-colors w-full"
                 disabled={blockTestLoading}
               >
                 {blockTestLoading
