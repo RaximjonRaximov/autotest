@@ -11,7 +11,8 @@ function AynanMavzulashtirilganTestlar() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [timeLeft, setTimeLeft] = useState(1500);
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(0);
   const [testStarted, setTestStarted] = useState(false);
   const [testEnded, setTestEnded] = useState(false);
   const [error, setError] = useState(null);
@@ -20,6 +21,8 @@ function AynanMavzulashtirilganTestlar() {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const { selectedLanguage } = useLanguage();
   const navigate = useNavigate();
+
+  const QUESTIONS_PER_GROUP = 50;
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -63,24 +66,27 @@ function AynanMavzulashtirilganTestlar() {
   useEffect(() => {
     if (!testStarted || testEnded) return;
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 0) {
-          clearInterval(timer);
-          handleTestEnd();
-          return 0;
-        }
-        return prevTime - 1;
-      });
+      setTimeElapsed((prevTime) => prevTime + 1);
     }, 1000);
     return () => clearInterval(timer);
   }, [testStarted, testEnded]);
 
   const getQuestionText = () => {
+    const questionNumber = currentPage;
+    let questionText;
     switch (selectedLanguage) {
-      case "RU": return currentQuestion.question?.LanRu || "Вопрос отсутствует";
-      case "KK": return currentQuestion.question?.LanKarakalpak || "Savol mavjud emas";
-      case "УЗ": return currentQuestion.question?.LanKrill || "Савол мавжуд эмас";
-      default: return currentQuestion.question?.LanUz || "Savol mavjud emas";
+      case "RU":
+        questionText = currentQuestion.question?.LanRu || "Вопрос отсутствует";
+        return `${questionNumber}. ${questionText}`;
+      case "KK":
+        questionText = currentQuestion.question?.LanKarakalpak || "Savol mavjud emas";
+        return `${questionNumber}. ${questionText}`;
+      case "УЗ":
+        questionText = currentQuestion.question?.LanKrill || "Савол мавжуд эмас";
+        return `${questionNumber}. ${questionText}`;
+      default:
+        questionText = currentQuestion.question?.LanUz || "Savol mavjud emas";
+        return `${questionNumber}. ${questionText}`;
     }
   };
 
@@ -93,9 +99,6 @@ function AynanMavzulashtirilganTestlar() {
     }));
     if (answer.is_correct) setCorrectCount((prev) => prev + 1);
     else setIncorrectCount((prev) => prev + 1);
-    setTimeout(() => {
-      if (currentPage < questions.length) setCurrentPage(currentPage + 1);
-    }, 1000);
   };
 
   const imageUrl = currentQuestion?.question?.Image
@@ -125,8 +128,9 @@ function AynanMavzulashtirilganTestlar() {
 
   const handleStartTest = () => {
     setTestStarted(true);
-    setTimeLeft(1500);
+    setTimeElapsed(0);
     setCurrentPage(1);
+    setCurrentGroup(0);
     setAnswers({});
     setCorrectCount(0);
     setIncorrectCount(0);
@@ -138,58 +142,95 @@ function AynanMavzulashtirilganTestlar() {
     if (unansweredCount > 0) setIncorrectCount((prev) => prev + unansweredCount);
     setTestStarted(false);
     setTestEnded(true);
-    const timeTaken = 1500 - timeLeft;
     const questionIds = questions.map((q) => q.id);
     const answerCorrectness = {};
     questionIds.forEach((id) => {
       answerCorrectness[id] = answers[id]?.is_correct || false;
     });
     navigate("/user/imtihon2050natija", {
-      state: { correct: correctCount, incorrect: incorrectCount, questionIds, answerCorrectness, timeTaken, questions },
+      state: { correct: correctCount, incorrect: incorrectCount, questionIds, answerCorrectness, timeTaken: timeElapsed, questions },
     });
   };
 
   const handleStopTest = () => handleTestEnd();
 
-  // Full Grid Pagination (Desktop)
-  const FullGridPagination = () => (
-    <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
-      <div className="flex flex-wrap gap-2 px-2 py-1">
-        {questions.map((_, index) => {
-          const page = index + 1;
-          const questionId = questions[index]?.id;
-          const userAnswer = answers[questionId];
-          let buttonColorClass = "bg-white text-black border border-gray-300";
-          if (currentPage === page) {
-            buttonColorClass = "bg-blue-500 text-white border border-blue-500";
-          } else if (testStarted && userAnswer) {
-            buttonColorClass = userAnswer.is_correct
-              ? "bg-green-500 text-white border border-green-500"
-              : "bg-red-500 text-white border border-red-500";
-          }
-          return (
-            <button
-              key={page}
-              onClick={() => handleQuestionClick(page)}
-              className={`sm:w-10 sm:h-10 w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
-            >
-              {page}
-            </button>
-          );
-        })}
-      </div>
-      <button
-        onClick={testStarted ? handleStopTest : handleStartTest}
-        className="mt-2 sm:mt-0 ml-0 sm:ml-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base transition-colors duration-200"
-      >
-        {testStarted
-          ? selectedLanguage === "UZ" ? "Tugatish" : selectedLanguage === "KK" ? "Ayaqtaý" : selectedLanguage === "УЗ" ? "Тугатиш" : "Закончить"
-          : selectedLanguage === "UZ" ? "Test" : selectedLanguage === "KK" ? "Test" : selectedLanguage === "УЗ" ? "Тест" : "Тест"}
-      </button>
-    </div>
-  );
+  const FullGridPagination = () => {
+    const startIndex = currentGroup * QUESTIONS_PER_GROUP;
+    const endIndex = Math.min(startIndex + QUESTIONS_PER_GROUP, questions.length);
+    const paginatedQuestions = questions.slice(startIndex, endIndex);
+    const totalGroups = Math.ceil(questions.length / QUESTIONS_PER_GROUP);
 
-  // Simple Pagination with Previous/Next (Mobile)
+    const handleNextGroup = () => {
+      if (currentGroup < totalGroups - 1) setCurrentGroup(currentGroup + 1);
+    };
+
+    const handlePreviousGroup = () => {
+      if (currentGroup > 0) setCurrentGroup(currentGroup - 1);
+    };
+
+    return (
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 w-full px-2">
+        {/* Previous 50 Button (Left) */}
+        <button
+          onClick={handlePreviousGroup}
+          disabled={currentGroup === 0}
+          className={`w-24 sm:w-10 py-2 bg-gray-300 text-black rounded-lg text-sm sm:text-base ${
+            currentGroup === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+          } transition-colors duration-200 sm:mr-4`}
+        >
+          {"<<"}
+        </button>
+
+        {/* Pagination Numbers (Center) */}
+        <div className="flex flex-wrap gap-2 px-2 py-1 justify-start flex-1">
+          {paginatedQuestions.map((_, index) => {
+            const page = startIndex + index + 1;
+            const questionId = questions[startIndex + index]?.id;
+            const userAnswer = answers[questionId];
+            let buttonColorClass = "bg-white text-black border border-gray-300";
+            if (currentPage === page) {
+              buttonColorClass = "bg-blue-500 text-white border border-blue-500";
+            } else if (testStarted && userAnswer) {
+              buttonColorClass = userAnswer.is_correct
+                ? "bg-green-500 text-white border border-green-500"
+                : "bg-red-500 text-white border border-red-500";
+            }
+            return (
+              <button
+                key={page}
+                onClick={() => handleQuestionClick(page)}
+                className={`sm:w-10 sm:h-10 w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
+              >
+                {page}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Next 50 and Test/Tugatish Buttons (Right) */}
+        <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
+          <button
+            onClick={handleNextGroup}
+            disabled={currentGroup === totalGroups - 1}
+            className={`w-24 sm:w-10 py-2 bg-gray-300 text-black rounded-lg text-sm sm:text-base ${
+              currentGroup === totalGroups - 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+            } transition-colors duration-200`}
+          >
+            {">>"}
+          </button>
+          <button
+            onClick={testStarted ? handleStopTest : handleStartTest}
+            className="w-24 sm:w-32 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base transition-colors duration-200"
+          >
+            {testStarted
+              ? selectedLanguage === "UZ" ? "Tugatish" : selectedLanguage === "KK" ? "Ayaqtaý" : selectedLanguage === "УЗ" ? "Тугатиш" : "Закончить"
+              : selectedLanguage === "UZ" ? "Test" : selectedLanguage === "KK" ? "Test" : selectedLanguage === "УЗ" ? "Тест" : "Тест"}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const SimplePagination = () => (
     <div className="flex flex-col space-y-2 mb-4">
       <div className="flex justify-between items-center">
@@ -228,43 +269,81 @@ function AynanMavzulashtirilganTestlar() {
     </div>
   );
 
-  // Bottom Grid Pagination (Mobile)
-  const BottomGridPagination = () => (
-    <div className="flex flex-wrap gap-2 px-2 py-1 mt-4">
-      {questions.map((_, index) => {
-        const page = index + 1;
-        const questionId = questions[index]?.id;
-        const userAnswer = answers[questionId];
-        let buttonColorClass = "bg-white text-black border border-gray-300";
-        if (currentPage === page) {
-          buttonColorClass = "bg-blue-500 text-white border border-blue-500";
-        } else if (testStarted && userAnswer) {
-          buttonColorClass = userAnswer.is_correct
-            ? "bg-green-500 text-white border border-green-500"
-            : "bg-red-500 text-white border border-red-500";
-        }
-        return (
+  const BottomGridPagination = () => {
+    const startIndex = currentGroup * QUESTIONS_PER_GROUP;
+    const endIndex = Math.min(startIndex + QUESTIONS_PER_GROUP, questions.length);
+    const paginatedQuestions = questions.slice(startIndex, endIndex);
+    const totalGroups = Math.ceil(questions.length / QUESTIONS_PER_GROUP);
+
+    const handleNextGroup = () => {
+      if (currentGroup < totalGroups - 1) setCurrentGroup(currentGroup + 1);
+    };
+
+    const handlePreviousGroup = () => {
+      if (currentGroup > 0) setCurrentGroup(currentGroup - 1);
+    };
+
+    return (
+      <div className="flex flex-col items-center mt-4">
+        <div className="flex flex-wrap gap-2 px-2 py-1">
+          {paginatedQuestions.map((_, index) => {
+            const page = startIndex + index + 1;
+            const questionId = questions[startIndex + index]?.id;
+            const userAnswer = answers[questionId];
+            let buttonColorClass = "bg-white text-black border border-gray-300";
+            if (currentPage === page) {
+              buttonColorClass = "bg-blue-500 text-white border border-blue-500";
+            } else if (testStarted && userAnswer) {
+              buttonColorClass = userAnswer.is_correct
+                ? "bg-green-500 text-white border border-green-500"
+                : "bg-red-500 text-white border border-red-500";
+            }
+            return (
+              <button
+                key={page}
+                onClick={() => handleQuestionClick(page)}
+                className={`w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
+              >
+                {page}
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between w-full max-w-xs mt-2 space-x-2">
           <button
-            key={page}
-            onClick={() => handleQuestionClick(page)}
-            className={`w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
+            onClick={handlePreviousGroup}
+            disabled={currentGroup === 0}
+            className={`w-24 py-2 bg-gray-300 text-black rounded-lg text-sm ${
+              currentGroup === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+            } transition-colors duration-200`}
           >
-            {page}
+            {"<<"}
           </button>
-        );
-      })}
-    </div>
-  );
+          <span className="w-24 text-center text-white text-sm">
+            {startIndex + 1}-{endIndex} of {questions.length}
+          </span>
+          <button
+            onClick={handleNextGroup}
+            disabled={currentGroup === totalGroups - 1}
+            className={`w-24 py-2 bg-gray-300 text-black rounded-lg text-sm ${
+              currentGroup === totalGroups - 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+            } transition-colors duration-200`}
+          >
+            {">>"}
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen p-4 sm:p-6" style={{ backgroundImage: `url('/loginBg.png')`, backgroundSize: "cover", backgroundPosition: "center" }}>
-      {/* Mobile Layout */}
       <div className="md:hidden flex flex-col">
         <SimplePagination />
         {error && <div className="text-red-500 text-center mb-2">{error}</div>}
         {!error && questions.length > 0 && (
           <>
-            <Savol text={getQuestionText()} timeLeft={testStarted ? timeLeft : null} />
+            <Savol text={getQuestionText()} timeLeft={testStarted ? timeElapsed : null} />
             <div className="flex justify-center mb-4">
               <img
                 src={currentQuestion.question?.Image}
@@ -301,13 +380,12 @@ function AynanMavzulashtirilganTestlar() {
         )}
       </div>
 
-      {/* Desktop Layout */}
       <div className="hidden md:block">
         <FullGridPagination />
         {error && <div className="text-red-500 text-center mb-4">{error}</div>}
         {!error && questions.length > 0 && (
           <>
-            <Savol text={getQuestionText()} timeLeft={testStarted ? timeLeft : null} />
+            <Savol text={getQuestionText()} timeLeft={testStarted ? timeElapsed : null} />
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="space-y-2 sm:space-y-4 flex-1">
                 {currentQuestion.answers?.map((answer, index) => {
