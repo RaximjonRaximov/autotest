@@ -84,6 +84,25 @@ const BlockTest = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Helper function to find the next unanswered question
+  const findNextUnansweredQuestion = (currentIndex) => {
+    for (let i = currentIndex + 1; i < questions.length; i++) {
+      const questionId = questions[i]?.question?.id;
+      if (!answeredQuestions[questionId]) {
+        return i;
+      }
+    }
+    // If no unanswered question is found after the current index, check from the beginning
+    for (let i = 0; i < currentIndex; i++) {
+      const questionId = questions[i]?.question?.id;
+      if (!answeredQuestions[questionId]) {
+        return i;
+      }
+    }
+    // If all questions are answered, return the current index
+    return currentIndex;
+  };
+
   const handleAnswerClick = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
@@ -104,6 +123,12 @@ const BlockTest = () => {
           ...prev,
           [questionId]: isCorrect,
         }));
+
+        // Automatically move to the next unanswered question after 2 seconds
+        setTimeout(() => {
+          const nextIndex = findNextUnansweredQuestion(currentQuestionIndex);
+          setCurrentQuestionIndex(nextIndex);
+        }, 2000); // 2-second delay
       } catch (err) {
         console.error('Error submitting answer:', err);
       }
