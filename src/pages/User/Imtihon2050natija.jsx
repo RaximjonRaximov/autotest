@@ -7,8 +7,13 @@ const Imtihon2050natija = () => {
   const navigate = useNavigate();
   const { selectedLanguage } = useLanguage();
 
-  const { correct, incorrect, questionIds, answerCorrectness, timeTaken, questions } = state || {};
+  const { questionIds, answerCorrectness, timeTaken, questions } = state || {};
   const totalQuestions = questionIds?.length || 0;
+
+  // Calculate correct and incorrect answers from answerCorrectness
+  const correct = Object.values(answerCorrectness).filter((isCorrect) => isCorrect).length;
+  const incorrect = totalQuestions - correct;
+
   const passingThreshold = 0.9;
   const passed = correct >= totalQuestions * passingThreshold;
 
@@ -60,7 +65,7 @@ const Imtihon2050natija = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 w-full max-w-full sm:max-w-4xl">
         <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questionIds?.map((questionId, index) => {
-            const isCorrect = answerCorrectness[questionId]; // Use questionId directly
+            const isCorrect = answerCorrectness[questionId];
             const buttonColorClass = isCorrect
               ? 'bg-green-500 text-white'
               : 'bg-red-500 text-white';
