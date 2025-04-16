@@ -43,6 +43,10 @@ const BiletTest = () => {
     setLoading(false);
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   useEffect(() => {
     resetTest();
     clearDatabase();
@@ -153,6 +157,7 @@ const BiletTest = () => {
           answerCorrectness,
           questions,
           timeTaken,
+          destination: '/user/imtihon-biletlar', // Set destination for Bilet-Test
         },
       });
     } catch (error) {
@@ -195,7 +200,16 @@ const BiletTest = () => {
 
   return (
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
-      {/* Pagination and Finish Button */}
+      <div className="flex justify-start mb-2">
+        <button onClick={handleGoBack} className="p-1 rounded-full hover:bg-gray-200 transition-colors duration-200">
+          <img
+            src="/back.png"
+            alt="Go Back"
+            className="w-5 h-5 sm:w-8 sm:h-8 invert cursor-pointer"
+          />
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
         <div className="flex flex-wrap gap-1 sm:gap-1 px-2 py-1">
           {questions.map((_, index) => {
@@ -236,10 +250,8 @@ const BiletTest = () => {
         </button>
       </div>
 
-      {/* Question Text and Timer */}
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      {/* Mobile: Picture and Answers (stacked) */}
       <div className="md:hidden">
         <div className="flex justify-center mb-4">
           <img
@@ -280,7 +292,6 @@ const BiletTest = () => {
         </div>
       </div>
 
-      {/* Desktop: Picture and Answers (side by side) */}
       <div className="hidden md:flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
           <div className="space-y-2 sm:space-y-4">

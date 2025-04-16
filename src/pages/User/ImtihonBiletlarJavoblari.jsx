@@ -152,7 +152,7 @@ const ImtihonBiletlarJavoblari = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-4 sm:py-8">
       <div className="w-full sm:max-w-4xl px-4 sm:px-0 flex items-center justify-between mb-4 sm:mb-8">
         <button onClick={handleGoBack}>
-          <img src="/back.png" alt="" className="w-7 h-7" />
+          <img src="/back.png" alt="" className="w-8 h-8 cursor-pointer" />
         </button>
         <h1 className="text-xl sm:text-3xl font-bold text-gray-800 text-center flex-1">
           {titleText[selectedLanguage] || titleText.UZ}

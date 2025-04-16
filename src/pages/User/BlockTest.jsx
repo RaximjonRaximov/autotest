@@ -40,6 +40,10 @@ const BlockTest = () => {
     setLoading(false);
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   useEffect(() => {
     resetTest();
     clearDatabase();
@@ -84,6 +88,22 @@ const BlockTest = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const findNextUnansweredQuestion = (currentIndex) => {
+    for (let i = currentIndex + 1; i < questions.length; i++) {
+      const questionId = questions[i]?.question?.id;
+      if (!answeredQuestions[questionId]) {
+        return i;
+      }
+    }
+    for (let i = 0; i < currentIndex; i++) {
+      const questionId = questions[i]?.question?.id;
+      if (!answeredQuestions[questionId]) {
+        return i;
+      }
+    }
+    return currentIndex;
+  };
+
   const handleAnswerClick = async (questionId, answerId) => {
     if (answeredQuestions[questionId]) return;
 
@@ -104,6 +124,11 @@ const BlockTest = () => {
           ...prev,
           [questionId]: isCorrect,
         }));
+
+        setTimeout(() => {
+          const nextIndex = findNextUnansweredQuestion(currentQuestionIndex);
+          setCurrentQuestionIndex(nextIndex);
+        }, 2000);
       } catch (err) {
         console.error('Error submitting answer:', err);
       }
@@ -133,6 +158,7 @@ const BlockTest = () => {
           answerCorrectness,
           questions,
           timeTaken,
+          destination: '/user', // Set destination for Block-Test
         },
       });
 
@@ -178,7 +204,16 @@ const BlockTest = () => {
 
   return (
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
-      {/* Pagination and Finish Button */}
+      <div className="flex justify-start mb-2">
+        <button onClick={handleGoBack} >
+          <img
+            src="/back.png"
+            alt="Go Back"
+            className="w-5 h-5 sm:w-8 sm:h-8 invert cursor-pointer"
+          />
+        </button>
+      </div>
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
         <div className="flex flex-wrap gap-1 sm:gap-1 px-2 py-1">
           {questions.map((_, index) => {
@@ -219,10 +254,8 @@ const BlockTest = () => {
         </button>
       </div>
 
-      {/* Question Text and Timer */}
       <Savol text={questionText} timeLeft={timeLeft} />
 
-      {/* Mobile: Picture and Answers (stacked) */}
       <div className="md:hidden">
         <div className="flex justify-center mb-4">
           <img
@@ -264,7 +297,6 @@ const BlockTest = () => {
         </div>
       </div>
 
-      {/* Desktop: Picture and Answers (side by side) */}
       <div className="hidden md:flex flex-col md:flex-row gap-4 sm:gap-6">
         <div className="flex-1">
           <div className="space-y-2 sm:space-y-4">

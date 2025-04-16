@@ -24,6 +24,10 @@ function AynanMavzulashtirilganTestlar() {
 
   const QUESTIONS_PER_GROUP = 50;
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   useEffect(() => {
     const getQuestions = async () => {
       if (!id) {
@@ -170,7 +174,6 @@ function AynanMavzulashtirilganTestlar() {
 
     return (
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 w-full px-2">
-        {/* Previous 50 Button (Left) */}
         <button
           onClick={handlePreviousGroup}
           disabled={currentGroup === 0}
@@ -180,8 +183,6 @@ function AynanMavzulashtirilganTestlar() {
         >
           {"<<"}
         </button>
-
-        {/* Pagination Numbers (Center) */}
         <div className="flex flex-wrap gap-2 px-2 py-1 justify-start flex-1">
           {paginatedQuestions.map((_, index) => {
             const page = startIndex + index + 1;
@@ -206,8 +207,6 @@ function AynanMavzulashtirilganTestlar() {
             );
           })}
         </div>
-
-        {/* Next 50 and Test/Tugatish Buttons (Right) */}
         <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0">
           <button
             onClick={handleNextGroup}
@@ -338,6 +337,13 @@ function AynanMavzulashtirilganTestlar() {
 
   return (
     <div className="min-h-screen p-4 sm:p-6" style={{ backgroundImage: `url('/loginBg.png')`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      {/* Header with Go Back Button */}
+      <div className="flex justify-start mb-2">
+        <button onClick={handleGoBack}>
+          <img src="/back.png" alt="Go Back" className="w-5 h-5 sm:w-8 sm:h-8 cursor-pointer invert" />
+        </button>
+      </div>
+
       <div className="md:hidden flex flex-col">
         <SimplePagination />
         {error && <div className="text-red-500 text-center mb-2">{error}</div>}
@@ -346,8 +352,7 @@ function AynanMavzulashtirilganTestlar() {
             <Savol text={getQuestionText()} timeLeft={testStarted ? timeElapsed : null} />
             <div className="flex justify-center mb-4">
               <img
-                src={currentQuestion.question?.Image}
-                alt="Question Image"
+                src={currentQuestion.question?.Image || "/avtotest.jpg"}
                 className="w-full max-w-[350px] object-cover rounded-lg"
               />
             </div>
