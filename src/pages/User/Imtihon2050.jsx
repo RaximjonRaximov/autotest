@@ -18,7 +18,9 @@ const Imtihon2050 = () => {
   const [answerCorrectness, setAnswerCorrectness] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const initialTime = 25 * 60; // 25 minutes in seconds
+  
+  // Set initial time based on testTuri: 30 minutes for 50 questions, 25 minutes for others
+  const initialTime = testTuri === "50" ? 30 * 60 : 25 * 60; // 1800 seconds for 50 questions, 1500 seconds otherwise
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   const clearDatabase = async () => {
@@ -175,13 +177,11 @@ const Imtihon2050 = () => {
     ? `${currentQuestion.question.Image}`
     : "/avtotest.jpg";
 
-  // testTuri ga qarab dizaynni o'zgartirish
   const is20Questions = testTuri === "20";
   const is50Questions = testTuri === "50";
 
-  // Full Grid Pagination komponenti (kompyuter uchun, rasmdagi kabi to'liq qator)
   const FullGridPagination = () => (
-    <div className="flex sm:flex-row flex-col  justify-between items-center mb-4 sm:mb-6">
+    <div className="flex sm:flex-row flex-col justify-between items-center mb-4 sm:mb-6">
       <div className="flex flex-wrap gap-2 px-2 py-1">
         {questions.map((_, index) => {
           const questionId = questions[index]?.question?.id;
@@ -200,7 +200,7 @@ const Imtihon2050 = () => {
             <button
               key={index}
               onClick={() => handleQuestionChange(index)}
-              className={`sm:w-10 sm:h-10 w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm  hover:bg-gray-200 transition-colors duration-200`}
+              className={`sm:w-10 sm:h-10 w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
             >
               {index + 1}
             </button>
@@ -222,7 +222,6 @@ const Imtihon2050 = () => {
     </div>
   );
 
-  // Rasmdagi Pagination komponenti (50 ta savol, mobil uchun yuqorida)
   const SimplePagination = () => (
     <div className="flex flex-col space-y-2 mb-4">
       <div className="flex justify-between items-center">
@@ -248,7 +247,6 @@ const Imtihon2050 = () => {
           {">>"}
         </button>
       </div>
-      {/* Tugatish tugmasi paginationdan keyin */}
       <div className="flex justify-end">
         <button
           onClick={handleFinish}
@@ -266,7 +264,6 @@ const Imtihon2050 = () => {
     </div>
   );
 
-  // Grid Pagination komponenti (50 ta savol, mobil uchun pastda)
   const BottomGridPagination = () => (
     <div className="flex flex-wrap gap-2 px-2 py-1 mt-4">
       {questions.map((_, index) => {
@@ -286,7 +283,7 @@ const Imtihon2050 = () => {
           <button
             key={index}
             onClick={() => handleQuestionChange(index)}
-            className={`w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm  hover:bg-gray-200 transition-colors duration-200`}
+            className={`w-7.5 h-7.5 flex items-center justify-center ${buttonColorClass} text-sm hover:bg-gray-200 transition-colors duration-200`}
           >
             {index + 1}
           </button>
@@ -298,15 +295,9 @@ const Imtihon2050 = () => {
   return (
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover">
       {is20Questions || !is50Questions ? (
-        // 20 ta savol yoki testTuri aniqlanmagan bo'lsa
         <>
-          {/* Pagination yuqorida (rasmdagi kabi to'liq qator) */}
           <FullGridPagination />
-
-          {/* Question Text and Timer */}
           <Savol text={questionText} timeLeft={timeLeft} />
-
-          {/* Mobile: Picture and Answers (stacked) */}
           <div className="md:hidden">
             <div className="flex justify-center mb-4">
               <img
@@ -346,8 +337,6 @@ const Imtihon2050 = () => {
               })}
             </div>
           </div>
-
-          {/* Desktop: Picture and Answers (side by side) */}
           <div className="hidden md:flex flex-col md:flex-row gap-4 sm:gap-6">
             <div className="flex-1">
               <div className="space-y-2 sm:space-y-4">
@@ -391,17 +380,10 @@ const Imtihon2050 = () => {
           </div>
         </>
       ) : (
-        // 50 ta savol bo'lsa
         <>
-          {/* Mobile: Pagination yuqorida (rasmdagi kabi), Tugatish tugmasi undan keyin, grid pagination pastda */}
           <div className="md:hidden flex flex-col">
-            {/* Pagination yuqorida (rasmdagi kabi) */}
             <SimplePagination />
-
-            {/* Question Text and Timer */}
             <Savol text={questionText} timeLeft={timeLeft} />
-
-            {/* Picture and Answers (stacked) */}
             <div className="flex justify-center mb-4">
               <img
                 src={imageUrl}
@@ -439,19 +421,11 @@ const Imtihon2050 = () => {
                 );
               })}
             </div>
-
-            {/* Grid Pagination eng pastda */}
             <BottomGridPagination />
           </div>
-
-          {/* Desktop: Pagination yuqorida (rasmdagi kabi to'liq qator) */}
           <div className="hidden md:block">
             <FullGridPagination />
-
-            {/* Question Text and Timer */}
             <Savol text={questionText} timeLeft={timeLeft} />
-
-            {/* Picture and Answers (side by side) */}
             <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
               <div className="flex-1">
                 <div className="space-y-2 sm:space-y-4">
