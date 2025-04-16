@@ -11,7 +11,7 @@ const Imtihon2050natija = () => {
   const totalQuestions = questionIds?.length || 0;
 
   // Calculate correct and incorrect answers from answerCorrectness
-  const correct = Object.values(answerCorrectness).filter((isCorrect) => isCorrect).length;
+  const correct = Object.values(answerCorrectness || {}).filter((isCorrect) => isCorrect).length;
   const incorrect = totalQuestions - correct;
 
   const passingThreshold = 0.9;
@@ -45,7 +45,7 @@ const Imtihon2050natija = () => {
   const failMessage = {
     UZ: "Afsuski, siz testdan o'ta olmadingiz",
     УЗ: "Афсуски, сиз тестдан ўта олмадингиз",
-    KK: "Өкінішке орай, сіз тесттен өте алмадыңыз",
+    KK: "Өкінішке орай, сіз тесттен өте алмадингиз",
     RU: "К сожалению, вы не прошли тест",
   };
 
@@ -56,12 +56,18 @@ const Imtihon2050natija = () => {
     RU: "Выход",
   };
 
-  const handleExit = () => {
-    navigate('/user');
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  const handleExit = (destination) => {
+    navigate(destination || '/user');
   };
 
   return (
     <div className="p-4 sm:p-6 text-white min-h-screen bg-[url(/loginBg.png)] bg-cover flex flex-col items-center">
+      
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 w-full max-w-full sm:max-w-4xl">
         <div className="flex flex-wrap px-2 py-1 gap-1 sm:gap-2">
           {questionIds?.map((questionId, index) => {
@@ -103,7 +109,7 @@ const Imtihon2050natija = () => {
       </p>
 
       <button
-        onClick={handleExit}
+        onClick={() => handleExit(state?.destination)}
         className="px-3 sm:px-4 py-1 sm:py-2 bg-white text-black rounded-lg hover:bg-gray-200 text-sm sm:text-base"
       >
         {exitButtonText[selectedLanguage]}

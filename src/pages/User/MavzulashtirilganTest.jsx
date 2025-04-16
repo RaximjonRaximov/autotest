@@ -10,7 +10,7 @@ const MavzulashtirilganTest = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { selectedLanguage } = useLanguage(); // Get the selected language from context
+  const { selectedLanguage } = useLanguage();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,7 +27,6 @@ const MavzulashtirilganTest = () => {
         setLoading(false);
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          // Token is invalid or expired, redirect to login
           navigate("/login");
         } else {
           setError("Kategoriyalarni yuklashda xato yuz berdi");
@@ -49,11 +48,10 @@ const MavzulashtirilganTest = () => {
       case "УЗ":
         return category.typeLanKrill;
       default:
-        return category.type; // Fallback to default type alllllllllllllllllllloooooo
+        return category.type;
     }
   };
 
-  // Translate the header based on the selected language
   const getHeaderText = () => {
     switch (selectedLanguage) {
       case "RU":
@@ -85,6 +83,10 @@ const MavzulashtirilganTest = () => {
     );
   }
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div
       className="min-h-screen p-6"
@@ -94,9 +96,17 @@ const MavzulashtirilganTest = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Header */}
+      <div className="flex justify-start mb-2">
+        <button onClick={handleGoBack} >
+          <img
+            src="/back.png"
+            alt="Go Back"
+            className="w-5 h-5 sm:w-8 sm:h-8 invert cursor-pointer"
+          />
+        </button>
+      </div>
       <h1
-        className="text-2xl font-bold text-white text-center mb-6"
+        className="flex items-center justify-center text-2xl font-bold text-white text-center mb-6"
         style={{
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
         }}
@@ -104,7 +114,6 @@ const MavzulashtirilganTest = () => {
         {getHeaderText()}
       </h1>
 
-      {/* Grid of Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {categories.map((category) => (
           <MavzuTest
